@@ -1,280 +1,190 @@
-using System.Diagnostics;
-using System.Net.Http;
-using System.Text.Json;
+name: TweakOS Release
 
-namespace TweakOS.Services;
+on:
+  push:
+    branches:
+      - main
 
-public sealed class ReleaseInfo
-{
-    public string TagName { get; set; } = "";
-    public string Name { get; set; } = "";
-    public string HtmlUrl { get; set; } = "";
-    public string Body { get; set; } = "";
-    public string DownloadUrl { get; set; } = "";
-}
+permissions:
+  contents: write
 
-public sealed class ReleaseService
-{
-    public const string CurrentVersion = "5.0.2";
+jobs:
+  build:
+    runs-on: windows-latest
 
-    private const string ApiUrl =
-        "https://api.github.com/repos/lucassde87/TweakOS/releases/latest";
+    steps:
 
-    private const string UpdateFileName =
-        "TweakOS-update.exe";
+      # ==============================
+      # CHECKOUT
+      # ==============================
 
-    public async Task<ReleaseInfo?> GetLatestAsync()
-    {
-        using var client = new HttpClient
-        {
-            Timeout = TimeSpan.FromSeconds(15)
-        };
+      - name: Checkout
+        uses: actions/checkout@v4
 
-        client.DefaultRequestHeaders.UserAgent.ParseAdd(
-            "TweakOS/5.0"
-        );
 
-        using var response =
-            await client.GetAsync(ApiUrl);
+      # ==============================
+      # .NET
+      # ==============================
 
-        response.EnsureSuccessStatusCode();
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
 
-        using var stream =
-            await response.Content.ReadAsStreamAsync();
 
-        using var document =
-            await JsonDocument.ParseAsync(stream);
+      # ==============================
+      # VERSION AUSLESEN
+      # ==============================
 
-        var root = document.RootElement;
+      - name: Read Version
+        id: version
+        shell: pwsh
+        run: |
 
-        var release = new ReleaseInfo
-        {
-            TagName =
-                root.TryGetProperty("tag_name", out var tag)
-                    ? tag.GetString() ?? ""
-                    : "",
+          $file = "src/TweakOS/Services/ReleaseService.cs"
 
-            Name =
-                root.TryGetProperty("name", out var name)
-                    ? name.GetString() ?? ""
-                    : "",
+          if (!(Test-Path $file)) {
+              throw "ReleaseService.cs wurde nicht gefunden."
+          }
 
-            HtmlUrl =
-                root.TryGetProperty("html_url", out var html)
-                    ? html.GetString() ?? ""
-                    : "",
+          $content = Get-Content $file -Raw
 
-            Body =
-                root.TryGetProperty("body", out var body)
-                    ? body.GetString() ?? ""
-                    : ""
-        };
+          if ($content -match 'CurrentVersion\s*=\s*"([^"]+)"') {
 
-        if (root.TryGetProperty("assets", out var assets))
-        {
-            foreach (var asset in assets.EnumerateArray())
-            {
-                var fileName =
-                    asset.TryGetProperty("name", out var assetName)
-                        ? assetName.GetString() ?? ""
-                        : "";
+              $version = $matches[1]
 
-                if (
-                    fileName.Equals(
-                        "TweakOS.exe",
-                        StringComparison.OrdinalIgnoreCase
-                    )
-                )
-                {
-                    release.DownloadUrl =
-                        asset.TryGetProperty(
-                            "browser_download_url",
-                            out var download
-                        )
-                            ? download.GetString() ?? ""
-                            : "";
+          }
+          else {
 
-                    break;
-                }
-            }
-        }
+              throw "CurrentVersion wurde nicht gefunden."
 
-        return release;
-    }
+          }
 
-    public static bool IsNewer(string tag)
-    {
-        return
-            Version.TryParse(
-                tag.Trim().TrimStart('v', 'V'),
-                out var remoteVersion
-            )
-            &&
-            Version.TryParse(
-                CurrentVersion,
-                out var currentVersion
-            )
-            &&
-            remoteVersion > currentVersion;
-    }
+          Write-Host "TweakOS Version: $version"
 
-    public static void OpenUrl(string url)
-    {
-        if (!string.IsNullOrWhiteSpace(url))
-        {
-            Process.Start(
-                new ProcessStartInfo
-                {
-                    FileName = url,
-                    UseShellExecute = true
-                }
-            );
-        }
-    }
+          "version=$version" >> $env:GITHUB_OUTPUT
 
-    public async Task<string> DownloadUpdateAsync(
-        ReleaseInfo release)
-    {
-        if (string.IsNullOrWhiteSpace(release.DownloadUrl))
-        {
-            throw new InvalidOperationException(
-                "Für dieses Release wurde keine TweakOS.exe gefunden."
-            );
-        }
 
-        var tempDirectory =
-            Path.Combine(
-                Path.GetTempPath(),
-                "TweakOS",
-                "Update"
-            );
+      # ==============================
+      # RELEASE PRÜFEN
+      # ==============================
 
-        Directory.CreateDirectory(tempDirectory);
+      - name: Check existing release
+        id: release_check
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
 
-        var exePath =
-            Path.Combine(
-                tempDirectory,
-                UpdateFileName
-            );
+        run: |
 
-        using var client = new HttpClient();
+          $version = "${{ steps.version.outputs.version }}"
+          $tag = "v$version"
 
-        client.Timeout =
-            TimeSpan.FromMinutes(5);
+          Write-Host "Prüfe Release $tag ..."
 
-        client.DefaultRequestHeaders.UserAgent.ParseAdd(
-            "TweakOS/5.0"
-        );
+          # Fehler von gh hier bewusst abfangen
+          $ErrorActionPreference = "Continue"
 
-        using var response =
-            await client.GetAsync(
-                release.DownloadUrl,
-                HttpCompletionOption.ResponseHeadersRead
-            );
+          gh release view $tag 2>$null
 
-        response.EnsureSuccessStatusCode();
+          if ($LASTEXITCODE -eq 0) {
 
-        await using var input =
-            await response.Content.ReadAsStreamAsync();
+              Write-Host "Release $tag existiert bereits."
 
-        await using var output =
-            new FileStream(
-                exePath,
-                FileMode.Create,
-                FileAccess.Write,
-                FileShare.None
-            );
+              "exists=true" >> $env:GITHUB_OUTPUT
 
-        await input.CopyToAsync(output);
+          }
+          else {
 
-        return exePath;
-    }
+              Write-Host "Release $tag existiert noch nicht."
 
-    public static string CreateUpdater(
-        string downloadedExePath)
-    {
-        var tempDirectory =
-            Path.GetDirectoryName(downloadedExePath)
-            ?? Path.GetTempPath();
+              "exists=false" >> $env:GITHUB_OUTPUT
 
-        var updaterPath =
-            Path.Combine(
-                tempDirectory,
-                "TweakOS-Updater.cmd"
-            );
+          }
 
-        var currentDirectory =
-            AppContext.BaseDirectory.TrimEnd(
-                Path.DirectorySeparatorChar,
-                Path.AltDirectorySeparatorChar
-            );
+          # Wichtig: Der Check darf niemals den Workflow beenden
+          exit 0
 
-        var currentApp =
-            Path.Combine(
-                currentDirectory,
-                "TweakOS.exe"
-            );
 
-        var downloadedExe =
-            downloadedExePath;
+      # ==============================
+      # TWEAKOS ALS EINE EXE BAUEN
+      # ==============================
 
-        var script = $"""
-@echo off
-setlocal
+      - name: Build TweakOS
+        if: steps.release_check.outputs.exists != 'true'
 
-timeout /t 2 /nobreak >nul
+        run: |
 
-powershell.exe -NoProfile -ExecutionPolicy Bypass -Command ^
-"$source='{EscapePowerShell(downloadedExe)}'; ^
-$target='{EscapePowerShell(currentApp)}'; ^
-$directory='{EscapePowerShell(currentDirectory)}'; ^
-$temp='{EscapePowerShell(tempDirectory)}'; ^
-Start-Sleep -Seconds 1; ^
-for($i=0;$i -lt 20;$i++) {{ ^
-    try {{ ^
-        if(Test-Path $target) {{ ^
-            Remove-Item $target -Force -ErrorAction Stop ^
-        }} ^
-        Copy-Item $source $target -Force -ErrorAction Stop; ^
-        break ^
-    }} catch {{ ^
-        Start-Sleep -Milliseconds 500 ^
-    }} ^
-}}; ^
-Remove-Item $source -Force -ErrorAction SilentlyContinue; ^
-Start-Process '{EscapePowerShell(currentApp)}'"
+          dotnet publish src/TweakOS/TweakOS.csproj `
+            -c Release `
+            -r win-x64 `
+            --self-contained true `
+            -p:PublishSingleFile=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true `
+            -p:EnableCompressionInSingleFile=true `
+            -o publish
 
-del "%~f0"
-""";
 
-        File.WriteAllText(
-            updaterPath,
-            script
-        );
+      # ==============================
+      # EXE PRÜFEN
+      # ==============================
 
-        return updaterPath;
-    }
+      - name: Verify EXE
+        if: steps.release_check.outputs.exists != 'true'
 
-    private static string EscapePowerShell(
-        string value)
-    {
-        return value.Replace(
-            "'",
-            "''"
-        );
-    }
+        shell: pwsh
 
-    public static void StartUpdater(
-        string updaterPath)
-    {
-        Process.Start(
-            new ProcessStartInfo
-            {
-                FileName = updaterPath,
-                UseShellExecute = true,
-                CreateNoWindow = true,
-                WindowStyle = ProcessWindowStyle.Hidden
-            }
-        );
-    }
-}
+        run: |
+
+          $exe = "publish/TweakOS.exe"
+
+          if (!(Test-Path $exe)) {
+
+              Write-Host "Dateien im Publish-Ordner:"
+
+              Get-ChildItem publish
+
+              throw "TweakOS.exe wurde nicht erstellt."
+
+          }
+
+          Write-Host "TweakOS.exe wurde erfolgreich erstellt."
+
+          $size =
+            (Get-Item $exe).Length / 1MB
+
+          Write-Host "EXE Größe: $([math]::Round($size,2)) MB"
+
+
+      # ==============================
+      # RELEASE ERSTELLEN
+      # ==============================
+
+      - name: Create GitHub Release
+        if: steps.release_check.outputs.exists != 'true'
+
+        uses: softprops/action-gh-release@v2
+
+        with:
+
+          tag_name: v${{ steps.version.outputs.version }}
+
+          name: TweakOS v${{ steps.version.outputs.version }}
+
+          body: |
+
+            ## TweakOS v${{ steps.version.outputs.version }}
+
+            Neue Version von TweakOS.
+
+            ### Download
+
+            **TweakOS.exe**
+
+            TweakOS wird als einzelne Windows-EXE ausgeliefert.
+
+            Keine ZIP-Datei erforderlich.
+
+          files: publish/TweakOS.exe
+
+          generate_release_notes: true
