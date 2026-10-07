@@ -3,7 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+
   <title>TweakOS</title>
+
   <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -18,9 +20,12 @@
   </div>
 </nav>
 
+
 <header>
 
-  <span class="pill">WINDOWS PERFORMANCE</span>
+  <span class="pill">
+    WINDOWS PERFORMANCE
+  </span>
 
   <h1>
     Dein PC.<br>
@@ -32,102 +37,205 @@
     Cleanup, Input und System-Optimierung.
   </p>
 
+
   <div class="actions">
 
     <a
       class="button"
       id="download"
-      href="https://github.com/lucassde87/TweakOS/releases/latest"
+      href="#"
     >
-      TweakOS herunterladen
+      Download
     </a>
 
-    <a class="ghost" href="changelog.html">
+    <a
+      class="ghost"
+      href="changelog.html"
+    >
       Changelog
     </a>
 
   </div>
 
-  <div id="release" class="muted">
+
+  <div
+    id="release"
+    class="muted"
+  >
     Aktuelle Version wird geladen …
   </div>
 
 </header>
 
+
 <section class="grid">
 
   <div class="card">
+
     <b>⚡ Tweaks</b>
-    <h2>Alles an einem Ort</h2>
+
+    <h2>
+      Alles an einem Ort
+    </h2>
+
     <p>
-      Deine Tweaks werden aus dem zentralen Katalog geladen
-      und können direkt ausgeführt werden.
+      Deine Tweaks werden aus dem zentralen
+      Katalog geladen und können direkt
+      ausgeführt werden.
     </p>
+
   </div>
 
+
   <div class="card">
+
     <b>🔄 Updates</b>
-    <h2>Immer aktuell</h2>
+
+    <h2>
+      Immer aktuell
+    </h2>
+
     <p>
-      Neue Releases werden von der App erkannt
-      und automatisch auf der Website angezeigt.
+      Neue Releases werden automatisch erkannt
+      und auf der Website bereitgestellt.
     </p>
+
   </div>
 
+
   <div class="card">
+
     <b>🔐 Kontrolle</b>
-    <h2>Nur du veröffentlichst</h2>
+
+    <h2>
+      Dein System
+    </h2>
+
     <p>
-      Die Schreibrechte bleiben bei deinem GitHub-Konto.
-      Kein öffentliches Admin-Passwort.
+      TweakOS gibt dir zentrale Kontrolle
+      über deine Windows-Optimierungen.
     </p>
+
   </div>
 
 </section>
 
+
 <footer>
   © TweakOS
 </footer>
+
 
 <script>
 
 const API =
   "https://api.github.com/repos/lucassde87/TweakOS/releases/latest";
 
+
+const downloadButton =
+  document.getElementById("download");
+
+
+const releaseText =
+  document.getElementById("release");
+
+
 fetch(API)
+
   .then(response => {
+
     if (!response.ok) {
       throw new Error("GitHub API Fehler");
     }
 
     return response.json();
+
   })
+
   .then(release => {
 
-    if (!release.tag_name) {
-      throw new Error("Keine Release-Version gefunden");
+    const version =
+      release.tag_name || "Unbekannt";
+
+
+    const date =
+      release.published_at
+        ? new Date(
+            release.published_at
+          ).toLocaleDateString("de-DE")
+        : "";
+
+
+    /*
+      Suche nach der fertigen
+      TweakOS-Windows-ZIP.
+    */
+
+    const asset =
+      (release.assets || []).find(file =>
+        file.name.toLowerCase()
+          === "tweakos-win-x64.zip"
+      );
+
+
+    /*
+      Wenn das ZIP gefunden wurde,
+      wird der Button direkt mit
+      dem Download verbunden.
+    */
+
+    if (asset) {
+
+      downloadButton.href =
+        asset.browser_download_url;
+
+      downloadButton.textContent =
+        `TweakOS ${version} herunterladen`;
+
+      downloadButton.removeAttribute("aria-disabled");
+
     }
 
-    const date = release.published_at
-      ? new Date(release.published_at).toLocaleDateString("de-DE")
-      : "";
+    else {
 
-    document.getElementById("release").textContent =
-      `Aktuelle Version: ${release.tag_name}` +
+      /*
+        Falls das ZIP aus irgendeinem
+        Grund nicht gefunden wird,
+        geht der Button zum Release.
+      */
+
+      downloadButton.href =
+        release.html_url ||
+        "https://github.com/lucassde87/TweakOS/releases/latest";
+
+      downloadButton.textContent =
+        `TweakOS ${version} herunterladen`;
+
+    }
+
+
+    releaseText.textContent =
+      `Aktuelle Version: ${version}` +
       (date ? ` • ${date}` : "");
 
-    const downloadButton =
-      document.getElementById("download");
+  })
+
+
+  .catch(error => {
+
+    console.error(error);
+
+
+    releaseText.textContent =
+      "Die aktuelle Version konnte nicht geladen werden.";
+
 
     downloadButton.href =
-      release.html_url ||
       "https://github.com/lucassde87/TweakOS/releases/latest";
 
-  })
-  .catch(() => {
 
-    document.getElementById("release").textContent =
-      "Aktuelle Version konnte nicht geladen werden.";
+    downloadButton.textContent =
+      "Zu den Releases";
 
   });
 
