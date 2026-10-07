@@ -1,9 +1,12 @@
+```yaml
 name: TweakOS Release
 
 on:
   push:
     tags:
       - "v*"
+
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -34,3 +37,4 @@ jobs:
         with:
           files: TweakOS-win-x64.zip
           generate_release_notes: true
+```
