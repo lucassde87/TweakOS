@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Threading;
 using TweakOS.Models;
 using TweakOS.Services;
 
@@ -10,383 +13,330 @@ namespace TweakOS;
 
 public partial class MainWindow : Window
 {
-    readonly TweakCatalogService catalog = new();
-    readonly ScriptRunner runner = new();
+readonly TweakCatalogService catalog = new();
+readonly ScriptRunner runner = new();
 
-    List<TweakDefinition> all = [];
+```
+List<TweakDefinition> all = [];
 
-    public MainWindow()
+readonly PerformanceCounter cpuCounter =
+    new("Processor", "% Processor Time", "_Total");
+
+readonly PerformanceCounter ramCounter =
+    new("Memory", "% Committed Bytes In Use");
+
+readonly DispatcherTimer performanceTimer = new();
+
+public MainWindow()
+{
+    InitializeComponent();
+
+    VersionText.Text =
+        $"v{ReleaseService.CurrentVersion}";
+
+    SettingsVersion.Text =
+        $"v{ReleaseService.CurrentVersion}";
+
+    performanceTimer.Interval =
+        TimeSpan.FromSeconds(1);
+
+    performanceTimer.Tick +=
+        UpdatePerformance;
+
+    Loaded += async (_, _) =>
     {
-        InitializeComponent();
+        performanceTimer.Start();
+        await LoadAsync();
+    };
 
-        VersionText.Text =
-            $"v{ReleaseService.CurrentVersion}";
-
-        Loaded += async (_, _) =>
-            await LoadAsync();
-    }
-
-    async Task LoadAsync()
+    Closed += (_, _) =>
     {
-        try
-        {
-            var c =
-                await catalog.LoadAsync();
+        performanceTimer.Stop();
 
-            all = c.Tweaks;
+        cpuCounter.Dispose();
+        ramCounter.Dispose();
+    };
+}
 
-            Filter();
-
-            CatalogStatus.Text =
-                $"Katalog v{c.CatalogVersion} • " +
-                $"{c.UpdatedAt} • " +
-                $"{c.Tweaks.Count} Tweaks";
-
-            await CheckUpdate(false);
-        }
-        catch (Exception e)
-        {
-            CatalogStatus.Text =
-                "Katalog konnte nicht geladen werden: " +
-                e.Message;
-        }
-    }
-
-    void Filter()
+async Task LoadAsync()
+{
+    try
     {
-        var q =
-            SearchBox?.Text?.Trim() ?? "";
+        var c =
+            await catalog.LoadAsync();
 
-        TweakList.ItemsSource =
-            string.IsNullOrWhiteSpace(q)
-                ? all
-                    .Where(x => x.Enabled)
-                    .ToList()
-                : all
-                    .Where(x =>
-                        x.Enabled &&
-                        (
-                            x.Name.Contains(
-                                q,
-                                StringComparison.OrdinalIgnoreCase
-                            )
-                            ||
-                            x.Category.Contains(
-                                q,
-                                StringComparison.OrdinalIgnoreCase
-                            )
-                            ||
-                            x.Description.Contains(
-                                q,
-                                StringComparison.OrdinalIgnoreCase
-                            )
-                        )
-                    )
-                    .ToList();
-    }
+        all = c.Tweaks;
 
-    void SearchBox_TextChanged(
-        object s,
-        System.Windows.Controls.TextChangedEventArgs e)
-    {
         Filter();
+
+        CatalogStatus.Text =
+            $"Katalog v{c.CatalogVersion} • " +
+            $"{c.UpdatedAt} • " +
+            $"{c.Tweaks.Count} Tweaks";
+
+        await CheckUpdate(false);
     }
-
-    async Task CheckUpdate(bool show)
+    catch (Exception e)
     {
-        try
+        CatalogStatus.Text =
+            "Katalog konnte nicht geladen werden: " +
+            e.Message;
+    }
+}
+
+void UpdatePerformance(
+    object? sender,
+    EventArgs e)
+{
+    try
+    {
+        var cpu =
+            Math.Clamp(
+                cpuCounter.NextValue(),
+                0,
+                100);
+
+        var ram =
+            Math.Clamp(
+                ramCounter.NextValue(),
+                0,
+                100);
+
+        var cpuText =
+            $"{cpu:0}%";
+
+        var ramText =
+            $"{ram:0}%";
+
+        CpuText.Text = cpuText;
+        RamText.Text = ramText;
+
+        PerformanceCpu.Text = cpuText;
+        PerformanceRam.Text = ramText;
+    }
+    catch
+    {
+        CpuText.Text = "--%";
+        RamText.Text = "--%";
+
+        PerformanceCpu.Text = "--%";
+        PerformanceRam.Text = "--%";
+    }
+}
+
+void ShowPanel(
+    Grid panel,
+    string title,
+    string subtitle)
+{
+    DashboardPanel.Visibility =
+        Visibility.Collapsed;
+
+    TweaksPanel.Visibility =
+        Visibility.Collapsed;
+
+    PerformancePanel.Visibility =
+        Visibility.Collapsed;
+
+    SettingsPanel.Visibility =
+        Visibility.Collapsed;
+
+    panel.Visibility =
+        Visibility.Visible;
+
+    PageTitle.Text =
+        title;
+
+    PageSubtitle.Text =
+        subtitle;
+}
+
+void Dashboard_Click(
+    object sender,
+    RoutedEventArgs e)
+{
+    ShowPanel(
+        DashboardPanel,
+        "Performance Center",
+        "System optimized.");
+}
+
+void Tweaks_Click(
+    object sender,
+    RoutedEventArgs e)
+{
+    ShowPanel(
+        TweaksPanel,
+        "Tweaks",
+        "Windows für Gaming und Performance optimieren.");
+}
+
+void Performance_Click(
+    object sender,
+    RoutedEventArgs e)
+{
+    ShowPanel(
+        PerformancePanel,
+        "Performance",
+        "Live-Systemübersicht.");
+}
+
+void Settings_Click(
+    object sender,
+    RoutedEventArgs e)
+{
+    ShowPanel(
+        SettingsPanel,
+        "Settings",
+        "TweakOS Einstellungen.");
+}
+
+void Filter()
+{
+    var q =
+        SearchBox?.Text?.Trim() ?? "";
+
+    TweakList.ItemsSource =
+        string.IsNullOrWhiteSpace(q)
+            ? all
+                .Where(x => x.Enabled)
+                .ToList()
+            : all
+                .Where(x =>
+                    x.Enabled &&
+                    (
+                        x.Name.Contains(
+                            q,
+                            StringComparison.OrdinalIgnoreCase)
+                        ||
+                        x.Category.Contains(
+                            q,
+                            StringComparison.OrdinalIgnoreCase)
+                        ||
+                        x.Description.Contains(
+                            q,
+                            StringComparison.OrdinalIgnoreCase)
+                    ))
+                .ToList();
+}
+
+void SearchBox_TextChanged(
+    object sender,
+    TextChangedEventArgs e)
+{
+    Filter();
+}
+
+async Task CheckUpdate(bool show)
+{
+    try
+    {
+        var releaseService =
+            new ReleaseService();
+
+        var release =
+            await releaseService.GetLatestAsync();
+
+        if (
+            release != null &&
+            ReleaseService.IsNewer(
+                release.TagName))
         {
-            var releaseService =
-                new ReleaseService();
+            UpdateButton.Content =
+                $"Update verfügbar: {release.TagName}";
 
-            var release =
-                await releaseService.GetLatestAsync();
-
-            if (
-                release != null &&
-                ReleaseService.IsNewer(
-                    release.TagName
-                )
-            )
-            {
-                UpdateButton.Content =
-                    $"Update verfügbar: {release.TagName}";
-
-                UpdateButton.Tag =
-                    release;
-            }
-            else
-            {
-                UpdateButton.Content =
-                    "Nach Updates suchen";
-
-                UpdateButton.Tag =
-                    null;
-
-                if (show)
-                {
-                    MessageBox.Show(
-                        $"Du verwendest bereits die aktuelle Version " +
-                        $"v{ReleaseService.CurrentVersion}.",
-                        "TweakOS"
-                    );
-                }
-            }
+            UpdateButton.Tag =
+                release;
         }
-        catch
+        else
         {
+            UpdateButton.Content =
+                "Nach Updates suchen";
+
+            UpdateButton.Tag =
+                null;
+
             if (show)
             {
                 MessageBox.Show(
-                    "Update-Prüfung war nicht möglich.\n\n" +
-                    "Prüfe deine Internetverbindung.",
-                    "TweakOS",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning
-                );
+                    $"Du verwendest bereits die aktuelle Version " +
+                    $"v{ReleaseService.CurrentVersion}.",
+                    "TweakOS");
             }
         }
     }
-
-    async void Update_Click(
-        object s,
-        RoutedEventArgs e)
+    catch
     {
-        /*
-         * Falls bereits ein Update gefunden wurde,
-         * direkt den Update-Vorgang starten.
-         */
-
-        if (
-            UpdateButton.Tag is ReleaseInfo release
-            &&
-            ReleaseService.IsNewer(
-                release.TagName
-            )
-        )
+        if (show)
         {
-            await InstallUpdate(release);
-            return;
-        }
-
-        /*
-         * Noch kein Update bekannt:
-         * GitHub prüfen.
-         */
-
-        await CheckUpdate(true);
-
-        /*
-         * Nach der Prüfung erneut kontrollieren,
-         * ob jetzt ein Update vorhanden ist.
-         */
-
-        if (
-            UpdateButton.Tag is ReleaseInfo newRelease
-            &&
-            ReleaseService.IsNewer(
-                newRelease.TagName
-            )
-        )
-        {
-            await InstallUpdate(newRelease);
-        }
-    }
-
-    async Task InstallUpdate(
-        ReleaseInfo release)
-    {
-        var version =
-            release.TagName;
-
-        var result =
             MessageBox.Show(
-                $"Eine neue TweakOS-Version ist verfügbar.\n\n" +
-                $"Aktuell: v{ReleaseService.CurrentVersion}\n" +
-                $"Neu: {version}\n\n" +
-                "TweakOS wird das Update herunterladen " +
-                "und anschließend neu starten.\n\n" +
-                "Jetzt aktualisieren?",
-                "TweakOS Update",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Information
-            );
-
-        if (
-            result != MessageBoxResult.Yes
-        )
-        {
-            return;
-        }
-
-        try
-        {
-            UpdateButton.IsEnabled = false;
-
-            UpdateButton.Content =
-                "Update wird heruntergeladen...";
-
-            var releaseService =
-                new ReleaseService();
-
-            /*
-             * ZIP herunterladen
-             */
-
-            var zipPath =
-                await releaseService.DownloadUpdateAsync(
-                    release
-                );
-
-            /*
-             * Prüfen, ob die Datei wirklich existiert.
-             */
-
-            if (!File.Exists(zipPath))
-            {
-                throw new FileNotFoundException(
-                    "Das Update-ZIP wurde nicht gefunden.",
-                    zipPath
-                );
-            }
-
-            /*
-             * Updater-Script erstellen.
-             */
-
-            var updaterPath =
-                ReleaseService.CreateUpdater(
-                    zipPath
-                );
-
-            /*
-             * Updater starten.
-             */
-
-            ReleaseService.StartUpdater(
-                updaterPath
-            );
-
-            /*
-             * Anwendung schließen.
-             * Der externe Updater übernimmt jetzt.
-             */
-
-            Close();
-        }
-        catch (Exception ex)
-        {
-            UpdateButton.IsEnabled = true;
-
-            UpdateButton.Content =
-                "Update erneut versuchen";
-
-            MessageBox.Show(
-                "Das Update konnte nicht installiert werden.\n\n" +
-                ex.Message,
-                "TweakOS Update",
+                "Update-Prüfung war nicht möglich.\n\n" +
+                "Prüfe deine Internetverbindung.",
+                "TweakOS",
                 MessageBoxButton.OK,
-                MessageBoxImage.Error
-            );
-        }
-    }
-
-    async void Run_Click(
-        object s,
-        RoutedEventArgs e)
-    {
-        if (
-            s is not FrameworkElement
-            {
-                Tag: TweakDefinition t
-            }
-        )
-        {
-            return;
-        }
-
-        var ok =
-            MessageBox.Show(
-                $"Tweak: {t.Name}\n" +
-                $"Risiko: {t.Risk}\n\n" +
-                $"{t.Description}\n\n" +
-                "Jetzt ausführen?",
-                "Tweak bestätigen",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning
-            );
-
-        if (
-            ok != MessageBoxResult.Yes
-        )
-        {
-            return;
-        }
-
-        var path =
-            Path.Combine(
-                AppContext.BaseDirectory,
-                t.Script.Replace(
-                    "/",
-                    Path.DirectorySeparatorChar.ToString()
-                )
-            );
-
-        if (!File.Exists(path))
-        {
-            path =
-                Path.GetFullPath(
-                    Path.Combine(
-                        AppContext.BaseDirectory,
-                        "..",
-                        "..",
-                        "..",
-                        "..",
-                        t.Script
-                    )
-                );
-        }
-
-        if (!File.Exists(path))
-        {
-            MessageBox.Show(
-                $"Script nicht gefunden:\n{path}",
-                "Fehler",
-                MessageBoxButton.OK,
-                MessageBoxImage.Error
-            );
-
-            return;
-        }
-
-        try
-        {
-            var code =
-                await runner.RunAsync(path);
-
-            MessageBox.Show(
-                $"Tweak beendet. Exit-Code: {code}",
-                "Fertig"
-            );
-        }
-        catch (
-            System.ComponentModel.Win32Exception
-        )
-        {
-            MessageBox.Show(
-                "Ausführung abgebrochen oder benötigt " +
-                "Administratorrechte.",
-                "Nicht ausgeführt"
-            );
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(
-                ex.Message,
-                "Fehler",
-                MessageBoxButton.OK,
-                MessageBoxImage.Error
-            );
+                MessageBoxImage.Warning);
         }
     }
 }
+
+async void Update_Click(
+    object sender,
+    RoutedEventArgs e)
+{
+    if (
+        UpdateButton.Tag is ReleaseInfo release &&
+        ReleaseService.IsNewer(
+            release.TagName))
+    {
+        await InstallUpdate(release);
+        return;
+    }
+
+    await CheckUpdate(true);
+
+    if (
+        UpdateButton.Tag is ReleaseInfo newRelease &&
+        ReleaseService.IsNewer(
+            newRelease.TagName))
+    {
+        await InstallUpdate(newRelease);
+    }
+}
+
+async Task InstallUpdate(
+    ReleaseInfo release)
+{
+    var version =
+        release.TagName;
+
+    var result =
+        MessageBox.Show(
+            $"Eine neue TweakOS-Version ist verfügbar.\n\n" +
+            $"Aktuell: v{ReleaseService.CurrentVersion}\n" +
+            $"Neu: {version}\n\n" +
+            "TweakOS wird das Update herunterladen " +
+            "und anschließend neu starten.\n\n" +
+            "Jetzt aktualisieren?",
+            "TweakOS Update",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Information);
+
+    if (
+        result != MessageBoxResult.Yes)
+    {
+        return;
+    }
+
+    try
+    {
+        UpdateButton.IsEnabled = false;
+
+        UpdateButton.Content =
+            "Update wird heruntergeladen...";
+
+        var releaseService =
+            new ReleaseService();
+
+        var exePath =
+            await releaseService.DownloadUpdateAsync(
+```
