@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "generatedFor": "TweakOS Project v3",
+  "policy": "legacy-sources-disabled-until-reviewed",
+  "entries": [
+    {
+      "id": "keyboard-panel-v1",
+      "folder": "keyboard",
+      "name": "Keyboard Panel V1",
+      "category": "Input",
+      "risk": "critical",
+      "version": "1.0.0",
+      "enabled": false,
+      "status": "review-required",
+      "description": "Legacy keyboard tweak panel. Disabled until external downloads, driver installation and low-level registry changes are reviewed."
+    },
+    {
+      "id": "mouse-panel-v2",
+      "folder": "mouse",
+      "name": "Mouse Panel V2",
+      "category": "Input",
+      "risk": "critical",
+      "version": "1.0.0",
+      "enabled": false,
+      "status": "review-required",
+      "description": "Legacy mouse tweak panel. Disabled until HIDUSBF/driver usage and low-level registry changes are reviewed."
+    },
+    {
+      "id": "cache-cleanup",
+      "folder": "cache-cleanup",
+      "name": "Cache Bereinigung",
+      "category": "Cleanup",
+      "risk": "high",
+      "version": "1.0.0",
+      "enabled": false,
+      "status": "review-required",
+      "description": "Legacy cache cleanup. Event-log clearing and broad cache deletion are not enabled for the public build."
+    },
+    {
+      "id": "ram-release",
+      "folder": "ram-release",
+      "name": "RAM Freigabe",
+      "category": "Performance",
+      "risk": "medium",
+      "version": "1.0.0",
+      "enabled": false,
+      "status": "review-required",
+      "description": "Legacy RAM-release script. The claimed system-wide working-set optimization is not reliable and process termination is potentially disruptive."
+    },
+    {
+      "id": "extra-bloatware",
+      "folder": "extra-bloatware",
+      "name": "Extra Bloatware",
+      "category": "Windows",
+      "risk": "high",
+      "version": "1.0.0",
+      "enabled": false,
+      "status": "review-required",
+      "description": "Legacy AppX/OneDrive removal. Disabled pending per-package detection, backup and reinstall handling."
+    },
+    {
+      "id": "bloatware",
+      "folder": "bloatware",
+      "name": "Bloatware",
+      "category": "Windows",
+      "risk": "critical",
+      "version": "1.0.0",
+      "enabled": false,
+      "status": "review-required",
+      "description": "Legacy broad Windows feature/AppX removal menu. Disabled because it can remove system capabilities and is not safely reversible as a single operation."
+    }
+  ]
+}

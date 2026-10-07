@@ -1,0 +1,14 @@
+using System.Windows;
+using TweakOS.Models;
+using TweakOS.Services;
+namespace TweakOS;
+public partial class MainWindow:Window{
+ readonly TweakCatalogService catalog=new(); readonly ScriptRunner runner=new(); List<TweakDefinition> all=[];
+ public MainWindow(){InitializeComponent();VersionText.Text=$"v{ReleaseService.CurrentVersion}";Loaded+=async(_,_)=>await LoadAsync();}
+ async Task LoadAsync(){try{var c=await catalog.LoadAsync();all=c.Tweaks;Filter();CatalogStatus.Text=$"Katalog v{c.CatalogVersion} • {c.UpdatedAt} • {c.Tweaks.Count} Tweaks";await CheckUpdate(false);}catch(Exception e){CatalogStatus.Text="Katalog konnte nicht geladen werden: "+e.Message;}}
+ void Filter(){var q=SearchBox?.Text?.Trim()??"";TweakList.ItemsSource=string.IsNullOrWhiteSpace(q)?all.Where(x=>x.Enabled).ToList():all.Where(x=>x.Enabled&&(x.Name.Contains(q,StringComparison.OrdinalIgnoreCase)||x.Category.Contains(q,StringComparison.OrdinalIgnoreCase)||x.Description.Contains(q,StringComparison.OrdinalIgnoreCase))).ToList();}
+ void SearchBox_TextChanged(object s,System.Windows.Controls.TextChangedEventArgs e)=>Filter();
+ async Task CheckUpdate(bool show){try{var r=await new ReleaseService().GetLatestAsync();if(r!=null&&ReleaseService.IsNewer(r.TagName)){UpdateButton.Content=$"Update verfügbar: {r.TagName}";UpdateButton.Tag=r;}else if(show)MessageBox.Show("Du verwendest bereits die aktuelle Version.","TweakOS");}catch{if(show)MessageBox.Show("Update-Prüfung war nicht möglich. Prüfe deine Internetverbindung.","TweakOS");}}
+ async void Update_Click(object s,RoutedEventArgs e){if(UpdateButton.Tag is ReleaseInfo r&&!string.IsNullOrWhiteSpace(r.HtmlUrl))ReleaseService.OpenUrl(r.HtmlUrl);else await CheckUpdate(true);}
+ async void Run_Click(object s,RoutedEventArgs e){if(s is not FrameworkElement{Tag:TweakDefinition t})return;var ok=MessageBox.Show($"Tweak: {t.Name}\nRisiko: {t.Risk}\n\n{t.Description}\n\nJetzt ausführen?","Tweak bestätigen",MessageBoxButton.YesNo,MessageBoxImage.Warning);if(ok!=MessageBoxResult.Yes)return;var path=Path.Combine(AppContext.BaseDirectory,t.Script.Replace("/",Path.DirectorySeparatorChar.ToString())); if(!File.Exists(path)) path=Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"..","..","..","..",t.Script));if(!File.Exists(path)){MessageBox.Show($"Script nicht gefunden:\n{path}","Fehler",MessageBoxButton.OK,MessageBoxImage.Error);return;}try{var code=await runner.RunAsync(path);MessageBox.Show($"Tweak beendet. Exit-Code: {code}","Fertig");}catch(System.ComponentModel.Win32Exception){MessageBox.Show("Ausführung abgebrochen oder benötigt Administratorrechte.","Nicht ausgeführt");}catch(Exception ex){MessageBox.Show(ex.Message,"Fehler",MessageBoxButton.OK,MessageBoxImage.Error);}}
+}

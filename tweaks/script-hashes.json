@@ -1,0 +1,14 @@
+{
+  "tweaks/keyboard/tweak.ps1": "dc00ce8193cd938e363496702c4a6a9f03e1dce249e2beb8ca6fe47722a5c882",
+  "tweaks/mouse/tweak.ps1": "dc00ce8193cd938e363496702c4a6a9f03e1dce249e2beb8ca6fe47722a5c882",
+  "tweaks/cache-cleanup/tweak.ps1": "dc00ce8193cd938e363496702c4a6a9f03e1dce249e2beb8ca6fe47722a5c882",
+  "tweaks/ram-release/tweak.ps1": "dc00ce8193cd938e363496702c4a6a9f03e1dce249e2beb8ca6fe47722a5c882",
+  "tweaks/extra-bloatware/tweak.ps1": "dc00ce8193cd938e363496702c4a6a9f03e1dce249e2beb8ca6fe47722a5c882",
+  "tweaks/bloatware/tweak.ps1": "dc00ce8193cd938e363496702c4a6a9f03e1dce249e2beb8ca6fe47722a5c882",
+  "tweaks/keyboard/run.ps1": "ec9b68726c9b4de14ddb4385282925b5df83749aec344898f2ab959e68651497",
+  "tweaks/mouse/run.ps1": "ec9b68726c9b4de14ddb4385282925b5df83749aec344898f2ab959e68651497",
+  "tweaks/cache-cleanup/run.ps1": "ec9b68726c9b4de14ddb4385282925b5df83749aec344898f2ab959e68651497",
+  "tweaks/ram-release/run.ps1": "ec9b68726c9b4de14ddb4385282925b5df83749aec344898f2ab959e68651497",
+  "tweaks/extra-bloatware/run.ps1": "ec9b68726c9b4de14ddb4385282925b5df83749aec344898f2ab959e68651497",
+  "tweaks/bloatware/run.ps1": "ec9b68726c9b4de14ddb4385282925b5df83749aec344898f2ab959e68651497"
+}

@@ -1,0 +1,12 @@
+TweakOS – Ausführungshinweis
+
+Dieser Tweak wird nur nach ausdrücklicher Benutzeraktion ausgeführt und kann
+Administratorrechte benötigen. Je nach Tweak können Registry, Dienste,
+Windows-Komponenten, Netzwerk- oder Eingabeeinstellungen verändert werden.
+
+Antivirus-Produkte können solche Werkzeuge aufgrund ihres Verhaltens
+heuristisch markieren. Eine Erkennung allein beweist nicht, dass die Datei
+Malware enthält.
+
+Bei einer Warnung können Quelle und SHA-256-Prüfsumme der konkreten Datei
+geprüft werden.

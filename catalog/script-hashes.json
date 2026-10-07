@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "scripts": {
+    "tweaks/disable-usb-powersaving.ps1": "ba235e9a04cf3f0f2fcaff16dff5d1aa401c827dc4d16a91cd93ee9aa5aaefe9",
+    "tweaks/bcd-timers.bat": "a06d52648f0055bc6deafe72c3cbd2dcb7093bb7b83c299891399347e7fe2801",
+    "tweaks/network-damons-network-v1.bat": "a6be6bd4d5e6fbc44cddb499cdefabd64bad7cb19a8f8703ce88096bb4b65404",
+    "tweaks/windows-cleanup.bat": "66903b8b0ba4ec0476486831ff4a2b609bb9f90fb2c9fa15a8b1a23f03f04d15",
+    "tweaks/fps-damons-process-lowering-v2.bat": "0b42360061df886b92722abd44509750df3c6b8b4dd38f55f220b5d2a422f388",
+    "tweaks/optimize-windows-settings.bat": "be877579d78847e9404632028082aace44aba8a08710ff14cec833852d11781d",
+    "tweaks/damons-process-lowering-v2.bat": "88b274eba3c2d86ff07af6aa32d97b883fd9d990b6a3106869febbf78d949ae6"
+  }
+}
