@@ -15,7 +15,7 @@ public sealed class ReleaseInfo
 
 public sealed class ReleaseService
 {
-    public const string CurrentVersion = "5.0.1";
+    public const string CurrentVersion = "5.0.2";
 
     private const string ApiUrl =
         "https://api.github.com/repos/lucassde87/TweakOS/releases/latest";
