@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
 using System.Net.Http;
 using System.Text.Json;
 
@@ -24,7 +26,7 @@ public sealed class ReleaseService
     {
         using var client = new HttpClient
         {
-            Timeout = TimeSpan.FromSeconds(10)
+            Timeout = TimeSpan.FromSeconds(15)
         };
 
         client.DefaultRequestHeaders.UserAgent.ParseAdd(
@@ -71,13 +73,8 @@ public sealed class ReleaseService
                         : "";
 
                 if (
-                    fileName.EndsWith(
-                        ".zip",
-                        StringComparison.OrdinalIgnoreCase
-                    )
-                    ||
-                    fileName.EndsWith(
-                        ".exe",
+                    fileName.Equals(
+                        "TweakOS-win-x64.zip",
                         StringComparison.OrdinalIgnoreCase
                     )
                 )
@@ -123,5 +120,121 @@ public sealed class ReleaseService
                 }
             );
         }
+    }
+
+    public async Task<string> DownloadUpdateAsync(
+        ReleaseInfo release)
+    {
+        if (string.IsNullOrWhiteSpace(release.DownloadUrl))
+        {
+            throw new InvalidOperationException(
+                "Für dieses Release wurde kein TweakOS-Download gefunden."
+            );
+        }
+
+        var tempDirectory =
+            Path.Combine(
+                Path.GetTempPath(),
+                "TweakOS",
+                "Update"
+            );
+
+        Directory.CreateDirectory(tempDirectory);
+
+        var zipPath =
+            Path.Combine(
+                tempDirectory,
+                "TweakOS-update.zip"
+            );
+
+        using var client = new HttpClient();
+
+        client.DefaultRequestHeaders.UserAgent.ParseAdd(
+            "TweakOS/5.0"
+        );
+
+        var data =
+            await client.GetByteArrayAsync(
+                release.DownloadUrl
+            );
+
+        await File.WriteAllBytesAsync(
+            zipPath,
+            data
+        );
+
+        return zipPath;
+    }
+
+    public static string CreateUpdater(
+        string zipPath)
+    {
+        var tempDirectory =
+            Path.GetDirectoryName(zipPath)
+            ?? Path.GetTempPath();
+
+        var updaterPath =
+            Path.Combine(
+                tempDirectory,
+                "TweakOS-Updater.cmd"
+            );
+
+        var currentDirectory =
+            AppContext.BaseDirectory.TrimEnd(
+                Path.DirectorySeparatorChar
+            );
+
+        var zip =
+            zipPath.Replace(
+                "\"",
+                "\"\""
+            );
+
+        var app =
+            Path.Combine(
+                currentDirectory,
+                "TweakOS.exe"
+            );
+
+        var script = $"""
+@echo off
+
+timeout /t 2 /nobreak >nul
+
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command ^
+"$zip='{zip}'; ^
+$target='{currentDirectory}'; ^
+$temp=Join-Path $env:TEMP 'TweakOS_Update'; ^
+Remove-Item $temp -Recurse -Force -ErrorAction SilentlyContinue; ^
+New-Item -ItemType Directory -Path $temp -Force | Out-Null; ^
+Expand-Archive -Path $zip -DestinationPath $temp -Force; ^
+Copy-Item (Join-Path $temp '*') $target -Recurse -Force; ^
+Remove-Item $zip -Force -ErrorAction SilentlyContinue; ^
+Remove-Item $temp -Recurse -Force -ErrorAction SilentlyContinue; ^
+Start-Process '{app}'"
+
+del "%~f0"
+""";
+
+        File.WriteAllText(
+            updaterPath,
+            script
+        );
+
+        return updaterPath;
+    }
+
+    public static void StartUpdater(
+        string updaterPath)
+    {
+        Process.Start(
+            new ProcessStartInfo
+            {
+                FileName = updaterPath,
+                UseShellExecute = true,
+                CreateNoWindow = true,
+                WindowStyle = ProcessWindowStyle.Hidden
+            }
+        );
     }
 }
