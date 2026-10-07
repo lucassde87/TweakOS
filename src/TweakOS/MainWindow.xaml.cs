@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using TweakOS.Models;
 using TweakOS.Services;
 
 namespace TweakOS;
@@ -14,10 +15,10 @@ public partial class MainWindow : Window
     private readonly TweakCatalogService _catalogService;
     private readonly ReleaseService _releaseService;
 
-    private readonly ObservableCollection<TweakItem> _allTweaks = new();
+    private readonly ObservableCollection<TweakDefinition> _allTweaks = new();
 
-    private readonly PerformanceCounter? _cpuCounter;
-    private readonly PerformanceCounter? _ramCounter;
+    private PerformanceCounter? _cpuCounter;
+    private PerformanceCounter? _ramCounter;
 
     private readonly DispatcherTimer _performanceTimer;
 
@@ -88,7 +89,7 @@ public partial class MainWindow : Window
 
         var filtered = string.IsNullOrWhiteSpace(search)
             ? _allTweaks
-            : new ObservableCollection<TweakItem>(
+            : new ObservableCollection<TweakDefinition>(
                 _allTweaks.Where(x =>
                     x.Name.Contains(
                         search,
@@ -145,8 +146,7 @@ public partial class MainWindow : Window
     {
         HideAllPanels();
 
-        TweaksPanel.Visibility =
-            Visibility.Visible;
+        TweaksPanel.Visibility = Visibility.Visible;
     }
 
     private void Performance_Click(
@@ -155,8 +155,7 @@ public partial class MainWindow : Window
     {
         HideAllPanels();
 
-        PerformancePanel.Visibility =
-            Visibility.Visible;
+        PerformancePanel.Visibility = Visibility.Visible;
     }
 
     private void Settings_Click(
@@ -165,31 +164,22 @@ public partial class MainWindow : Window
     {
         HideAllPanels();
 
-        SettingsPanel.Visibility =
-            Visibility.Visible;
+        SettingsPanel.Visibility = Visibility.Visible;
     }
 
     private void ShowDashboard()
     {
         HideAllPanels();
 
-        DashboardPanel.Visibility =
-            Visibility.Visible;
+        DashboardPanel.Visibility = Visibility.Visible;
     }
 
     private void HideAllPanels()
     {
-        DashboardPanel.Visibility =
-            Visibility.Collapsed;
-
-        TweaksPanel.Visibility =
-            Visibility.Collapsed;
-
-        PerformancePanel.Visibility =
-            Visibility.Collapsed;
-
-        SettingsPanel.Visibility =
-            Visibility.Collapsed;
+        DashboardPanel.Visibility = Visibility.Collapsed;
+        TweaksPanel.Visibility = Visibility.Collapsed;
+        PerformancePanel.Visibility = Visibility.Collapsed;
+        SettingsPanel.Visibility = Visibility.Collapsed;
     }
 
     private void SearchBox_TextChanged(
@@ -205,12 +195,10 @@ public partial class MainWindow : Window
     {
         try
         {
-            var release =
-                await _releaseService.GetLatestAsync();
+            var release = await _releaseService.GetLatestAsync();
 
             if (release == null ||
-                string.IsNullOrWhiteSpace(
-                    release.TagName))
+                string.IsNullOrWhiteSpace(release.TagName))
             {
                 MessageBox.Show(
                     "Kein Release gefunden.",
@@ -221,8 +209,7 @@ public partial class MainWindow : Window
                 return;
             }
 
-            if (!ReleaseService.IsNewer(
-                    release.TagName))
+            if (!ReleaseService.IsNewer(release.TagName))
             {
                 MessageBox.Show(
                     "Du verwendest bereits die aktuelle Version.",
@@ -245,15 +232,12 @@ public partial class MainWindow : Window
                 return;
 
             var downloaded =
-                await _releaseService.DownloadUpdateAsync(
-                    release);
+                await _releaseService.DownloadUpdateAsync(release);
 
             var updater =
-                ReleaseService.CreateUpdater(
-                    downloaded);
+                ReleaseService.CreateUpdater(downloaded);
 
-            ReleaseService.StartUpdater(
-                updater);
+            ReleaseService.StartUpdater(updater);
 
             Application.Current.Shutdown();
         }
@@ -275,13 +259,12 @@ public partial class MainWindow : Window
         if (sender is not Button button)
             return;
 
-        if (button.Tag is not TweakItem tweak)
+        if (button.Tag is not TweakDefinition tweak)
             return;
 
         try
         {
-            if (string.IsNullOrWhiteSpace(
-                    tweak.Script))
+            if (string.IsNullOrWhiteSpace(tweak.Script))
             {
                 MessageBox.Show(
                     "Für diesen Tweak wurde kein Script hinterlegt.",
