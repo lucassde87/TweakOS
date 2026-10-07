@@ -4,19 +4,14 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
 
-```
-<Nullable>enable</Nullable>
-<ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>TweakOS</AssemblyName>
+    <RootNamespace>TweakOS</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
 
-<AssemblyName>TweakOS</AssemblyName>
-<RootNamespace>TweakOS</RootNamespace>
-
-<ApplicationManifest>app.manifest</ApplicationManifest>
-
-<Platforms>AnyCPU</Platforms>
-```
-
+    <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
