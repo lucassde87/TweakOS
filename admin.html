@@ -1,1 +1,435 @@
-<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TweakOS Publisher</title><link rel="stylesheet" href="styles.css"></head><body><nav><b>TweakOS</b><div><a href="index.html">Website</a><a href="changelog.html">Changelog</a></div></nav><main><span class="pill">PUBLISHER</span><h1>Deine Verwaltung</h1><div class="card"><h2>🔐 Nur du veröffentlichst</h2><p>Diese Seite enthält bewusst kein Passwort und keinen GitHub-Token. Die Schreibberechtigung liegt ausschließlich bei deinem GitHub-Konto.</p></div><div class="card"><h2>Neue Version</h2><p>Projekt ändern → Version erhöhen → Tag <b>v5.x.x</b> erstellen → GitHub Actions baut den Release automatisch. Website und App erkennen die neue Version danach.</p><p><a class="button" href="https://github.com/lucassde87/tweak/releases">Zu den Releases</a></p></div></main><footer>Nur Repository-Schreibberechtigte können Releases erstellen.</footer></body></html>
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>TweakOS Publisher</title>
+
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    .admin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .admin-card {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 18px;
+      padding: 25px;
+      backdrop-filter: blur(12px);
+    }
+
+    .admin-card h2 {
+      margin-top: 0;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(120,80,255,.12);
+      border: 1px solid rgba(120,80,255,.3);
+      font-size: 14px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #7c5cff;
+      box-shadow: 0 0 12px #7c5cff;
+    }
+
+    .version {
+      font-size: 42px;
+      font-weight: 800;
+      margin: 10px 0;
+    }
+
+    .admin-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .admin-button {
+      display: inline-block;
+      padding: 12px 18px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 700;
+      border: 1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.05);
+      color: white;
+      transition: .2s;
+    }
+
+    .admin-button:hover {
+      transform: translateY(-2px);
+      background: rgba(124,92,255,.2);
+      border-color: rgba(124,92,255,.5);
+    }
+
+    .admin-button.primary {
+      background: linear-gradient(135deg,#7c5cff,#4d7cff);
+      border: none;
+    }
+
+    .steps {
+      margin: 0;
+      padding-left: 22px;
+    }
+
+    .steps li {
+      margin: 12px 0;
+    }
+
+    .release-box {
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 14px;
+      background: rgba(0,0,0,.2);
+      border: 1px solid rgba(255,255,255,.06);
+    }
+
+    .loading {
+      opacity: .7;
+    }
+  </style>
+</head>
+
+<body>
+
+<nav>
+  <b>TweakOS</b>
+
+  <div>
+    <a href="index.html">Website</a>
+    <a href="changelog.html">Changelog</a>
+  </div>
+</nav>
+
+<main>
+
+  <span class="pill">PUBLISHER</span>
+
+  <h1>Deine Verwaltung</h1>
+
+  <p>
+    Zentrale Übersicht für deine TweakOS-Website und Releases.
+  </p>
+
+  <div class="admin-grid">
+
+    <!-- AKTUELLE VERSION -->
+    <div class="admin-card">
+
+      <div class="status">
+        <span class="status-dot"></span>
+        GitHub verbunden
+      </div>
+
+      <h2>Aktuelle Version</h2>
+
+      <div id="version" class="version loading">
+        Lade...
+      </div>
+
+      <p id="releaseDate">
+        Release wird geladen...
+      </p>
+
+      <div class="admin-actions">
+        <a
+          id="downloadButton"
+          class="admin-button primary"
+          href="#"
+          target="_blank"
+        >
+          📥 Download
+        </a>
+
+        <a
+          id="releaseButton"
+          class="admin-button"
+          href="#"
+          target="_blank"
+        >
+          GitHub Release
+        </a>
+      </div>
+
+    </div>
+
+
+    <!-- VERWALTUNG -->
+    <div class="admin-card">
+
+      <h2>⚙️ Verwaltung</h2>
+
+      <p>
+        Deine eigentliche Veröffentlichung läuft weiterhin über dein
+        GitHub-Repository und die automatische TweakOS-Release-Action.
+      </p>
+
+      <div class="admin-actions">
+
+        <a
+          class="admin-button primary"
+          href="https://github.com/lucassde87/TweakOS"
+          target="_blank"
+        >
+          🛠️ Repository
+        </a>
+
+        <a
+          class="admin-button"
+          href="https://github.com/lucassde87/TweakOS/releases"
+          target="_blank"
+        >
+          📦 Releases
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- RELEASE ABLAUF -->
+  <div class="admin-card" style="margin-top:20px">
+
+    <h2>🚀 Neue TweakOS-Version veröffentlichen</h2>
+
+    <ol class="steps">
+
+      <li>
+        Ändere deinen TweakOS-Code im Repository.
+      </li>
+
+      <li>
+        Öffne
+        <b>src/TweakOS/Services/ReleaseService.cs</b>.
+      </li>
+
+      <li>
+        Erhöhe dort
+        <b>CurrentVersion</b>,
+        z. B. von <b>5.0.0</b> auf <b>5.0.1</b>.
+      </li>
+
+      <li>
+        Committe die Änderung auf <b>main</b>.
+      </li>
+
+      <li>
+        GitHub Actions baut automatisch TweakOS.
+      </li>
+
+      <li>
+        GitHub erstellt automatisch das neue Release.
+      </li>
+
+      <li>
+        Die Website erkennt automatisch die neue Version.
+      </li>
+
+    </ol>
+
+  </div>
+
+
+  <!-- LETZTES RELEASE -->
+  <div class="admin-card" style="margin-top:20px">
+
+    <h2>📋 Letztes Release</h2>
+
+    <div id="releaseInfo" class="release-box loading">
+      Lade Release-Informationen...
+    </div>
+
+  </div>
+
+
+  <!-- SICHERHEIT -->
+  <div class="admin-card" style="margin-top:20px">
+
+    <h2>🔐 Sicherheit</h2>
+
+    <p>
+      Diese Admin-Seite enthält absichtlich keinen GitHub-Personal-Access-Token.
+    </p>
+
+    <p>
+      Die Berechtigung zum Erstellen und Veröffentlichen von Releases
+      bleibt bei deinem GitHub-Konto.
+    </p>
+
+    <p>
+      <strong>Wichtig:</strong> Die URL dieser Seite ist nicht geheim.
+      Sie dient als Verwaltungsübersicht, nicht als sichere Anmeldung.
+    </p>
+
+  </div>
+
+</main>
+
+
+<footer>
+  TweakOS by Damon · Publisher
+</footer>
+
+
+<script>
+
+const API =
+  "https://api.github.com/repos/lucassde87/TweakOS/releases/latest";
+
+async function loadRelease() {
+
+  const versionElement =
+    document.getElementById("version");
+
+  const dateElement =
+    document.getElementById("releaseDate");
+
+  const downloadButton =
+    document.getElementById("downloadButton");
+
+  const releaseButton =
+    document.getElementById("releaseButton");
+
+  const releaseInfo =
+    document.getElementById("releaseInfo");
+
+  try {
+
+    const response =
+      await fetch(API, {
+        headers: {
+          "Accept": "application/vnd.github+json"
+        }
+      });
+
+    if (!response.ok) {
+      throw new Error("GitHub API Fehler");
+    }
+
+    const release =
+      await response.json();
+
+    const tag =
+      release.tag_name || "Unbekannt";
+
+    const version =
+      tag.startsWith("v")
+        ? tag
+        : "v" + tag;
+
+    versionElement.textContent =
+      version;
+
+    versionElement.classList.remove("loading");
+
+    const date =
+      new Date(release.published_at || release.created_at);
+
+    dateElement.textContent =
+      "Veröffentlicht am " +
+      date.toLocaleDateString("de-DE");
+
+    releaseButton.href =
+      release.html_url;
+
+    const asset =
+      release.assets?.find(
+        file =>
+          file.name === "TweakOS-win-x64.zip"
+      );
+
+    if (asset) {
+
+      downloadButton.href =
+        asset.browser_download_url;
+
+      downloadButton.textContent =
+        "📥 TweakOS herunterladen";
+
+    } else {
+
+      downloadButton.href =
+        release.html_url;
+
+      downloadButton.textContent =
+        "📦 Release öffnen";
+
+    }
+
+    const body =
+      release.body || "Kein Changelog vorhanden.";
+
+    releaseInfo.innerHTML = `
+      <strong>${escapeHtml(release.name || version)}</strong>
+
+      <p style="white-space:pre-wrap">
+        ${escapeHtml(body)}
+      </p>
+
+      <a
+        class="admin-button"
+        href="${release.html_url}"
+        target="_blank"
+      >
+        Release auf GitHub öffnen
+      </a>
+    `;
+
+    releaseInfo.classList.remove("loading");
+
+  } catch (error) {
+
+    versionElement.textContent =
+      "Fehler";
+
+    versionElement.classList.remove("loading");
+
+    dateElement.textContent =
+      "GitHub Release konnte nicht geladen werden.";
+
+    releaseInfo.textContent =
+      "Fehler beim Abrufen des aktuellen Releases.";
+
+    releaseInfo.classList.remove("loading");
+
+  }
+
+}
+
+
+function escapeHtml(text) {
+
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+
+loadRelease();
+
+</script>
+
+</body>
+</html>
