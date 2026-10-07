@@ -16,7 +16,7 @@ public partial class MainWindow : Window
 private readonly TweakCatalogService _catalogService;
 private readonly ReleaseService _releaseService;
 
-```
+
     private readonly ObservableCollection<TweakDefinition> _allTweaks = new();
 
     private PerformanceCounter? _cpuCounter;
@@ -332,6 +332,5 @@ private readonly ReleaseService _releaseService;
         base.OnClosed(e);
     }
 }
-```
 
 }
