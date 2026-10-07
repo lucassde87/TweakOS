@@ -50,7 +50,9 @@ jobs:
           $version = "${{ steps.version.outputs.version }}"
           $tag = "v$version"
 
-          $release = gh release view $tag 2>$null
+          Write-Host "Prüfe Release $tag ..."
+
+          $result = gh release view $tag 2>&1
 
           if ($LASTEXITCODE -eq 0) {
               Write-Host "Release $tag existiert bereits."
@@ -59,6 +61,12 @@ jobs:
           else {
               Write-Host "Release $tag existiert noch nicht."
               "exists=false" >> $env:GITHUB_OUTPUT
+
+              # Wichtig:
+              # gh release view liefert bei einem nicht
+              # vorhandenen Release Exit-Code 1.
+              # Dieser Fehler soll den Workflow NICHT stoppen.
+              exit 0
           }
 
       - name: Build TweakOS
