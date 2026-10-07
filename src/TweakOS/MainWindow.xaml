@@ -1,208 +1,187 @@
 <Window x:Class="TweakOS.MainWindow"
-     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-     Title="TweakOS"
-     Height="760"
-     Width="1280"
-     MinHeight="650"
-     MinWidth="1050"
-     WindowStartupLocation="CenterScreen"
-     Background="#070B12">
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TweakOS"
+        Width="1280"
+        Height="760"
+        MinWidth="1100"
+        MinHeight="650"
+        WindowStartupLocation="CenterScreen"
+        Background="#070B12">
 
-```
-<Window.Resources>
+    <Window.Resources>
 
-    <Style x:Key="NavButton" TargetType="Button">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="#8994A6"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="HorizontalContentAlignment" Value="Left"/>
-        <Setter Property="Padding" Value="18,13"/>
-        <Setter Property="Margin" Value="0,4"/>
-        <Setter Property="FontSize" Value="14"/>
-        <Setter Property="Cursor" Value="Hand"/>
-    </Style>
+        <Style x:Key="NavButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#AEB8C8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="18,12"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="0,3"/>
+        </Style>
 
-    <Style x:Key="ActionButton" TargetType="Button">
-        <Setter Property="Background" Value="#7C3AED"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Padding" Value="18,10"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Cursor" Value="Hand"/>
-    </Style>
+        <Style x:Key="ActionButton" TargetType="Button">
+            <Setter Property="Background" Value="#171F2D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#273348"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14,9"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
 
-    <Style x:Key="Card" TargetType="Border">
-        <Setter Property="Background" Value="#0D131D"/>
-        <Setter Property="BorderBrush" Value="#192333"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius" Value="12"/>
-    </Style>
+    </Window.Resources>
 
-</Window.Resources>
+    <Grid>
 
-<Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="235"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-    <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="235"/>
-        <ColumnDefinition Width="*"/>
-    </Grid.ColumnDefinitions>
+        <!-- SIDEBAR -->
+        <Border Grid.Column="0"
+                Background="#0B1019"
+                BorderBrush="#151E2D"
+                BorderThickness="0,0,1,0">
 
-    <!-- SIDEBAR -->
+            <Grid Margin="18">
 
-    <Border Grid.Column="0"
-            Background="#090E16"
-            BorderBrush="#151D2A"
-            BorderThickness="0,0,1,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-        <Grid Margin="18">
+                <!-- LOGO -->
+                <StackPanel Grid.Row="0"
+                            Margin="8,10,8,28">
+
+                    <TextBlock Text="TweakOS"
+                               Foreground="White"
+                               FontSize="25"
+                               FontWeight="Bold"/>
+
+                    <TextBlock Text="by Damon"
+                               Foreground="#66758C"
+                               FontSize="12"
+                               Margin="0,2,0,0"/>
+
+                </StackPanel>
+
+                <!-- STATUS -->
+                <Border Grid.Row="1"
+                        Background="#101824"
+                        BorderBrush="#1C293A"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="12"
+                        Margin="0,0,0,20">
+
+                    <StackPanel>
+
+                        <TextBlock Text="●  SYSTEM READY"
+                                   Foreground="#55D98B"
+                                   FontSize="11"
+                                   FontWeight="Bold"/>
+
+                        <TextBlock Text="TweakOS 5.0"
+                                   Foreground="#6E7E94"
+                                   FontSize="11"
+                                   Margin="0,5,0,0"/>
+
+                    </StackPanel>
+
+                </Border>
+
+                <!-- NAVIGATION -->
+                <StackPanel Grid.Row="2">
+
+                    <Button x:Name="DashboardButton"
+                            Content="▣   Dashboard"
+                            Style="{StaticResource NavButton}"
+                            Click="Dashboard_Click"/>
+
+                    <Button x:Name="TweaksButton"
+                            Content="⚡   Tweaks"
+                            Style="{StaticResource NavButton}"
+                            Click="Tweaks_Click"/>
+
+                    <Button x:Name="PerformanceButton"
+                            Content="◉   Performance"
+                            Style="{StaticResource NavButton}"
+                            Click="Performance_Click"/>
+
+                    <Button x:Name="SettingsButton"
+                            Content="⚙   Settings"
+                            Style="{StaticResource NavButton}"
+                            Click="Settings_Click"/>
+
+                </StackPanel>
+
+                <!-- FOOTER -->
+                <TextBlock Grid.Row="3"
+                           Text="TweakOS Performance Center"
+                           Foreground="#46556A"
+                           FontSize="10"
+                           TextWrapping="Wrap"
+                           Margin="8,0,8,8"/>
+
+            </Grid>
+
+        </Border>
+
+
+        <!-- MAIN AREA -->
+        <Grid Grid.Column="1"
+              Margin="35">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- LOGO -->
-
-            <StackPanel>
-
-                <TextBlock Text="TweakOS"
-                           FontSize="27"
-                           FontWeight="Bold"
-                           Foreground="White"/>
-
-                <TextBlock Text="by Damon"
-                           Margin="2,2,0,0"
-                           FontSize="12"
-                           Foreground="#7C3AED"/>
-
-            </StackPanel>
-
-            <!-- NAVIGATION -->
-
-            <StackPanel Grid.Row="1"
-                        Margin="0,55,0,0">
-
-                <TextBlock Text="MAIN"
-                           FontSize="10"
-                           FontWeight="Bold"
-                           Foreground="#4F5B6C"
-                           Margin="18,0,0,10"/>
-
-                <Button Content="▣   Dashboard"
-                        Style="{StaticResource NavButton}"
-                        Click="Dashboard_Click"/>
-
-                <Button Content="⚡   Tweaks"
-                        Style="{StaticResource NavButton}"
-                        Click="Tweaks_Click"/>
-
-                <Button Content="◉   Performance"
-                        Style="{StaticResource NavButton}"
-                        Click="Performance_Click"/>
-
-                <Button Content="⚙   Settings"
-                        Style="{StaticResource NavButton}"
-                        Click="Settings_Click"/>
-
-            </StackPanel>
-
-            <!-- STATUS -->
-
-            <Border Grid.Row="2"
-                    Background="#0D131D"
-                    BorderBrush="#192333"
-                    BorderThickness="1"
-                    CornerRadius="10"
-                    Padding="12">
+            <!-- HEADER -->
+            <Grid Grid.Row="0"
+                  Margin="0,5,0,25">
 
                 <StackPanel>
 
-                    <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="PERFORMANCE CENTER"
+                               Foreground="White"
+                               FontSize="27"
+                               FontWeight="Bold"/>
 
-                        <Ellipse Width="8"
-                                 Height="8"
-                                 Fill="#22C55E"
-                                 Margin="0,0,8,0"/>
-
-                        <TextBlock Text="SYSTEM READY"
-                                   FontSize="10"
-                                   FontWeight="Bold"
-                                   Foreground="#22C55E"/>
-
-                    </StackPanel>
-
-                    <TextBlock x:Name="VersionText"
-                               Text="v5.0.2"
-                               Margin="16,6,0,0"
-                               Foreground="#687587"
-                               FontSize="11"/>
+                    <TextBlock Text="System optimized."
+                               Foreground="#718096"
+                               FontSize="13"
+                               Margin="0,5,0,0"/>
 
                 </StackPanel>
 
-            </Border>
+                <Button Content="Check for Updates"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource ActionButton}"
+                        Click="Update_Click"/>
 
-        </Grid>
+            </Grid>
 
-    </Border>
-
-    <!-- MAIN AREA -->
-
-    <Grid Grid.Column="1"
-          Margin="34">
-
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <!-- HEADER -->
-
-        <Grid>
-
-            <StackPanel>
-
-                <TextBlock x:Name="PageTitle"
-                           Text="Performance Center"
-                           FontSize="30"
-                           FontWeight="Bold"
-                           Foreground="White"/>
-
-                <TextBlock x:Name="PageSubtitle"
-                           Text="System optimized."
-                           Margin="0,5,0,0"
-                           Foreground="#788598"
-                           FontSize="14"/>
-
-            </StackPanel>
-
-            <Button x:Name="UpdateButton"
-                    Content="Nach Updates suchen"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Style="{StaticResource ActionButton}"
-                    Click="Update_Click"/>
-
-        </Grid>
-
-        <!-- CONTENT -->
-
-        <Grid Grid.Row="1"
-              Margin="0,30,0,0">
 
             <!-- DASHBOARD -->
-
-            <Grid x:Name="DashboardPanel">
+            <Grid x:Name="DashboardPanel"
+                  Grid.Row="1">
 
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="220"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- OPTIMIZATION -->
-
-                <Grid>
+                <!-- TOP CARDS -->
+                <Grid Grid.Row="0">
 
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*"/>
@@ -210,77 +189,93 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border Style="{StaticResource Card}"
-                            Padding="24"
-                            Margin="0,0,10,0">
+
+                    <!-- PERFORMANCE -->
+                    <Border Grid.Column="0"
+                            Background="#101722"
+                            BorderBrush="#1B2738"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            Margin="0,0,12,0"
+                            Padding="25">
 
                         <StackPanel>
 
                             <TextBlock Text="PERFORMANCE"
-                                       Foreground="#687587"
-                                       FontSize="10"
+                                       Foreground="#728198"
+                                       FontSize="11"
                                        FontWeight="Bold"/>
 
                             <TextBlock Text="98%"
-                                       Margin="0,7,0,0"
                                        Foreground="White"
-                                       FontSize="40"
-                                       FontWeight="Bold"/>
+                                       FontSize="48"
+                                       FontWeight="Bold"
+                                       Margin="0,10,0,0"/>
 
-                            <TextBlock Text="System optimized."
-                                       Foreground="#22C55E"
+                            <TextBlock Text="Gaming Optimized"
+                                       Foreground="#55D98B"
+                                       FontSize="13"
                                        Margin="0,2,0,0"/>
 
                         </StackPanel>
 
                     </Border>
 
+
+                    <!-- CPU -->
                     <Border Grid.Column="1"
-                            Style="{StaticResource Card}"
-                            Padding="22"
-                            Margin="10,0">
+                            Background="#101722"
+                            BorderBrush="#1B2738"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            Margin="0,0,12,0"
+                            Padding="20">
 
                         <StackPanel>
 
                             <TextBlock Text="CPU"
-                                       Foreground="#687587"
+                                       Foreground="#728198"
                                        FontSize="11"/>
 
-                            <TextBlock x:Name="CpuText"
+                            <TextBlock x:Name="CpuValue"
                                        Text="--%"
-                                       Margin="0,7,0,0"
-                                       FontSize="28"
+                                       Foreground="White"
+                                       FontSize="32"
                                        FontWeight="Bold"
-                                       Foreground="White"/>
+                                       Margin="0,15,0,0"/>
 
-                            <TextBlock Text="Intel Processor"
-                                       Foreground="#687587"
+                            <TextBlock Text="Usage"
+                                       Foreground="#5F6D80"
                                        FontSize="11"/>
 
                         </StackPanel>
 
                     </Border>
 
+
+                    <!-- RAM -->
                     <Border Grid.Column="2"
-                            Style="{StaticResource Card}"
-                            Padding="22"
-                            Margin="10,0,0,0">
+                            Background="#101722"
+                            BorderBrush="#1B2738"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            Padding="20">
 
                         <StackPanel>
 
                             <TextBlock Text="MEMORY"
-                                       Foreground="#687587"
+                                       Foreground="#728198"
                                        FontSize="11"/>
 
-                            <TextBlock x:Name="RamText"
+                            <TextBlock x:Name="RamValue"
                                        Text="--%"
-                                       Margin="0,7,0,0"
-                                       FontSize="28"
+                                       Foreground="White"
+                                       FontSize="32"
                                        FontWeight="Bold"
-                                       Foreground="White"/>
+                                       Margin="0,15,0,0"/>
 
-                            <TextBlock Text="System RAM"
-                                       Foreground="#687587"
+                            <TextBlock Text="RAM Usage"
+                                       Foreground="#5F6D80"
                                        FontSize="11"/>
 
                         </StackPanel>
@@ -289,129 +284,265 @@
 
                 </Grid>
 
-                <!-- STATUS CARDS -->
 
-                <Grid Grid.Row="1"
-                      Margin="0,22,0,0">
+                <!-- STATUS -->
+                <Border Grid.Row="1"
+                        Background="#101722"
+                        BorderBrush="#1B2738"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Margin="0,15,0,0"
+                        Padding="25">
 
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                    <StackPanel>
 
-                    <Border Style="{StaticResource Card}"
-                            Padding="24"
-                            Margin="0,0,10,0">
+                        <TextBlock Text="SYSTEM STATUS"
+                                   Foreground="White"
+                                   FontSize="15"
+                                   FontWeight="Bold"/>
 
-                        <StackPanel>
+                        <Grid Margin="0,25,0,0">
 
-                            <TextBlock Text="SYSTEM STATUS"
-                                       FontSize="11"
-                                       FontWeight="Bold"
-                                       Foreground="#687587"/>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-                            <TextBlock Text="✓  Gaming Optimized"
-                                       Margin="0,22,0,0"
-                                       Foreground="#22C55E"
-                                       FontSize="16"
-                                       FontWeight="SemiBold"/>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="✓"
+                                           Foreground="#55D98B"
+                                           FontSize="24"/>
+                                <TextBlock Text="Gaming Optimized"
+                                           Foreground="#C7D0DD"
+                                           FontSize="13"
+                                           Margin="0,8,0,0"/>
+                                <TextBlock Text="Performance tweaks active"
+                                           Foreground="#59687B"
+                                           FontSize="11"
+                                           Margin="0,3,0,0"/>
+                            </StackPanel>
 
-                            <TextBlock Text="✓  Input Enhanced"
-                                       Margin="0,16,0,0"
-                                       Foreground="#22C55E"
-                                       FontSize="16"
-                                       FontWeight="SemiBold"/>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="✓"
+                                           Foreground="#55D98B"
+                                           FontSize="24"/>
+                                <TextBlock Text="Input Enhanced"
+                                           Foreground="#C7D0DD"
+                                           FontSize="13"
+                                           Margin="0,8,0,0"/>
+                                <TextBlock Text="Input latency optimized"
+                                           Foreground="#59687B"
+                                           FontSize="11"
+                                           Margin="0,3,0,0"/>
+                            </StackPanel>
 
-                            <TextBlock Text="✓  System Clean"
-                                       Margin="0,16,0,0"
-                                       Foreground="#22C55E"
-                                       FontSize="16"
-                                       FontWeight="SemiBold"/>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="✓"
+                                           Foreground="#55D98B"
+                                           FontSize="24"/>
+                                <TextBlock Text="System Clean"
+                                           Foreground="#C7D0DD"
+                                           FontSize="13"
+                                           Margin="0,8,0,0"/>
+                                <TextBlock Text="System ready for gaming"
+                                           Foreground="#59687B"
+                                           FontSize="11"
+                                           Margin="0,3,0,0"/>
+                            </StackPanel>
 
-                        </StackPanel>
+                        </Grid>
 
-                    </Border>
+                    </StackPanel>
 
-                    <Border Grid.Column="1"
-                            Style="{StaticResource Card}"
-                            Padding="24"
-                            Margin="10,0,0,0">
+                </Border>
 
-                        <StackPanel>
+            </Grid>
 
-                            <TextBlock Text="TWEAKOS"
-                                       FontSize="11"
-                                       FontWeight="Bold"
-                                       Foreground="#687587"/>
 
-                            <TextBlock Text="Performance Center"
-                                       Margin="0,20,0,0"
-                                       FontSize="24"
-                                       FontWeight="Bold"
-                                       Foreground="White"/>
+            <!-- TWEAKS -->
+            <Grid x:Name="TweaksPanel"
+                  Grid.Row="1"
+                  Visibility="Collapsed">
 
-                            <TextBlock Text="Optimize Windows for gaming and everyday performance."
-                                       TextWrapping="Wrap"
-                                       Margin="0,10,0,0"
-                                       Foreground="#788598"
-                                       FontSize="13"/>
+                <Grid>
 
-                        </StackPanel>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-                    </Border>
+                    <TextBox x:Name="SearchBox"
+                             Grid.Row="0"
+                             Height="40"
+                             Background="#101722"
+                             Foreground="White"
+                             BorderBrush="#253348"
+                             BorderThickness="1"
+                             Padding="12"
+                             TextChanged="SearchBox_TextChanged"/>
+
+                    <ListView x:Name="TweakList"
+                              Grid.Row="1"
+                              Margin="0,15,0,0"
+                              Background="Transparent"
+                              BorderThickness="0"
+                              Foreground="White">
+
+                        <ListView.ItemTemplate>
+
+                            <DataTemplate>
+
+                                <Border Background="#101722"
+                                        BorderBrush="#1B2738"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Padding="15"
+                                        Margin="0,0,0,8">
+
+                                    <Grid>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel>
+
+                                            <TextBlock Text="{Binding Name}"
+                                                       Foreground="White"
+                                                       FontSize="14"
+                                                       FontWeight="Bold"/>
+
+                                            <TextBlock Text="{Binding Description}"
+                                                       Foreground="#68778B"
+                                                       FontSize="11"
+                                                       Margin="0,4,0,0"/>
+
+                                        </StackPanel>
+
+                                        <Button Grid.Column="1"
+                                                Content="RUN"
+                                                Tag="{Binding}"
+                                                Click="Run_Click"
+                                                Style="{StaticResource ActionButton}"
+                                                Padding="20,8"/>
+
+                                    </Grid>
+
+                                </Border>
+
+                            </DataTemplate>
+
+                        </ListView.ItemTemplate>
+
+                    </ListView>
 
                 </Grid>
 
             </Grid>
 
-            <!-- TWEAKS -->
 
-            <Grid x:Name="TweaksPanel"
+            <!-- PERFORMANCE -->
+            <Grid x:Name="PerformancePanel"
+                  Grid.Row="1"
                   Visibility="Collapsed">
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+                <StackPanel>
 
-                <Border Style="{StaticResource Card}"
-                        Padding="14">
-
-                    <Grid>
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="280"/>
-                        </Grid.ColumnDefinitions>
+                    <Border Background="#101722"
+                            BorderBrush="#1B2738"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            Padding="25"
+                            Margin="0,0,0,15">
 
                         <StackPanel>
 
-                            <TextBlock Text="Tweak-Datenbank"
-                                       Foreground="White"
-                                       FontWeight="SemiBold"
-                                       FontSize="16"/>
+                            <TextBlock Text="CPU USAGE"
+                                       Foreground="#718096"
+                                       FontSize="11"/>
 
-                            <TextBlock x:Name="CatalogStatus"
-                                       Text="Wird geladen..."
-                                       Foreground="#788598"
-                                       Margin="0,4,0,0"/>
+                            <TextBlock x:Name="CpuPerformanceValue"
+                                       Text="--%"
+                                       Foreground="White"
+                                       FontSize="42"
+                                       FontWeight="Bold"
+                                       Margin="0,8,0,0"/>
 
                         </StackPanel>
 
-                        <TextBox Grid.Column="1"
-                                 x:Name="SearchBox"
-                                 TextChanged="SearchBox_TextChanged"
-                                 VerticalContentAlignment="Center"
-                                 Padding="10"
-                                 Background="#070B12"
-                                 Foreground="White"
-                                 BorderBrush="#253044"/>
+                    </Border>
 
-                    </Grid>
+                    <Border Background="#101722"
+                            BorderBrush="#1B2738"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            Padding="25">
 
-                </Border>
+                        <StackPanel>
 
-                <ListView Grid.Row="1"
-                          x:Name="TweakList"
-                          Margin="0,18,0,0
-```
+                            <TextBlock Text="MEMORY USAGE"
+                                       Foreground="#718096"
+                                       FontSize="11"/>
+
+                            <TextBlock x:Name="RamPerformanceValue"
+                                       Text="--%"
+                                       Foreground="White"
+                                       FontSize="42"
+                                       FontWeight="Bold"
+                                       Margin="0,8,0,0"/>
+
+                        </StackPanel>
+
+                    </Border>
+
+                </StackPanel>
+
+            </Grid>
+
+
+            <!-- SETTINGS -->
+            <Grid x:Name="SettingsPanel"
+                  Grid.Row="1"
+                  Visibility="Collapsed">
+
+                <StackPanel>
+
+                    <Border Background="#101722"
+                            BorderBrush="#1B2738"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            Padding="25">
+
+                        <StackPanel>
+
+                            <TextBlock Text="TweakOS Settings"
+                                       Foreground="White"
+                                       FontSize="18"
+                                       FontWeight="Bold"/>
+
+                            <TextBlock Text="Version 5.0.2"
+                                       Foreground="#68778B"
+                                       FontSize="12"
+                                       Margin="0,10,0,20"/>
+
+                            <Button Content="Check for Updates"
+                                    Width="180"
+                                    HorizontalAlignment="Left"
+                                    Style="{StaticResource ActionButton}"
+                                    Click="Update_Click"/>
+
+                        </StackPanel>
+
+                    </Border>
+
+                </StackPanel>
+
+            </Grid>
+
+        </Grid>
+
+    </Grid>
+
+</Window>
