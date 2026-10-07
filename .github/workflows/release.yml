@@ -15,7 +15,7 @@ jobs:
     steps:
 
       # ==============================
-      # CHECKOUT
+      # CODE HERUNTERLADEN
       # ==============================
 
       - name: Checkout
@@ -23,7 +23,7 @@ jobs:
 
 
       # ==============================
-      # .NET
+      # .NET INSTALLIEREN
       # ==============================
 
       - name: Setup .NET
@@ -33,7 +33,7 @@ jobs:
 
 
       # ==============================
-      # VERSION AUSLESEN
+      # VERSION AUS version.txt LESEN
       # ==============================
 
       - name: Read Version
@@ -41,32 +41,25 @@ jobs:
         shell: pwsh
         run: |
 
-          $file = "src/TweakOS/Services/ReleaseService.cs"
+          $file = "version.txt"
 
           if (!(Test-Path $file)) {
-              throw "ReleaseService.cs wurde nicht gefunden."
+              throw "version.txt wurde nicht gefunden."
           }
 
-          $content = Get-Content $file -Raw
+          $version = (Get-Content $file -Raw).Trim()
 
-          if ($content -match 'CurrentVersion\s*=\s*"([^"]+)"') {
+          Write-Host "Gefundene Version: $version"
 
-              $version = $matches[1]
-
+          if ($version -notmatch '^\d+\.\d+\.\d+$') {
+              throw "Ungültige Version in version.txt: $version"
           }
-          else {
-
-              throw "CurrentVersion wurde nicht gefunden."
-
-          }
-
-          Write-Host "TweakOS Version: $version"
 
           "version=$version" >> $env:GITHUB_OUTPUT
 
 
       # ==============================
-      # RELEASE PRÜFEN
+      # PRÜFEN OB RELEASE EXISTIERT
       # ==============================
 
       - name: Check existing release
@@ -78,12 +71,13 @@ jobs:
         run: |
 
           $version = "${{ steps.version.outputs.version }}"
-
           $tag = "v$version"
 
           Write-Host "Prüfe Release $tag ..."
 
-          $result = gh release view $tag 2>&1
+          $ErrorActionPreference = "Continue"
+
+          gh release view $tag 2>$null
 
           if ($LASTEXITCODE -eq 0) {
 
@@ -100,9 +94,12 @@ jobs:
 
           }
 
+          exit 0
+
 
       # ==============================
-      # TWEAKOS ALS EINE EXE BAUEN
+      # TWEAKOS BAUEN
+      # EINZELNE EXE
       # ==============================
 
       - name: Build TweakOS
@@ -121,7 +118,7 @@ jobs:
 
 
       # ==============================
-      # PRÜFEN OB EXE EXISTIERT
+      # EXE PRÜFEN
       # ==============================
 
       - name: Verify EXE
@@ -135,7 +132,7 @@ jobs:
 
           if (!(Test-Path $exe)) {
 
-              Write-Host "Dateien im Publish-Ordner:"
+              Write-Host "Publish-Dateien:"
 
               Get-ChildItem publish
 
@@ -143,11 +140,13 @@ jobs:
 
           }
 
-          Write-Host "TweakOS.exe gefunden."
-
           $size = (Get-Item $exe).Length / 1MB
 
-          Write-Host "EXE Größe: $([math]::Round($size,2)) MB"
+          Write-Host ""
+          Write-Host "=============================="
+          Write-Host "TweakOS.exe erfolgreich erstellt"
+          Write-Host "Größe: $([math]::Round($size,2)) MB"
+          Write-Host "=============================="
 
 
       # ==============================
@@ -173,13 +172,10 @@ jobs:
 
             ### Download
 
-            **TweakOS.exe**
+            TweakOS.exe
 
-            TweakOS wird als einzelne Windows-EXE ausgeliefert.
-
-            Keine ZIP-Datei erforderlich.
-
-            Dieses Release wurde automatisch von GitHub Actions erstellt.
+            Einzelne Windows-EXE.
+            Keine ZIP-Datei.
 
           files: publish/TweakOS.exe
 
