@@ -58,29 +58,36 @@ namespace TweakOS
             _performanceTimer.Tick += PerformanceTimer_Tick;
             _performanceTimer.Start();
 
-            LoadTweaks();
+            _ = LoadTweaksAsync();
 
             ShowDashboard();
         }
 
-        private void LoadTweaks()
+        private async System.Threading.Tasks.Task LoadTweaksAsync()
         {
             try
             {
-                var tweaks = _catalogService.GetTweaks();
+                var catalog = await _catalogService.LoadAsync();
 
                 _allTweaks.Clear();
 
-                foreach (var tweak in tweaks)
+                foreach (var tweak in catalog.Tweaks)
                 {
                     _allTweaks.Add(tweak);
                 }
 
                 RefreshTweakList();
             }
-            catch
+            catch (Exception ex)
             {
                 TweakList.ItemsSource = null;
+
+                MessageBox.Show(
+                    "Der Tweak-Katalog konnte nicht geladen werden.\n\n" +
+                    ex.Message,
+                    "TweakOS",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
             }
         }
 
