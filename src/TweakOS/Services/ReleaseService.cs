@@ -44,35 +44,30 @@ public sealed class ReleaseService
 
         var release = new ReleaseInfo
         {
-            TagName =
-                root.TryGetProperty("tag_name", out var tag)
-                    ? tag.GetString() ?? ""
-                    : "",
+            TagName = root.TryGetProperty("tag_name", out var tag)
+                ? tag.GetString() ?? ""
+                : "",
 
-            Name =
-                root.TryGetProperty("name", out var name)
-                    ? name.GetString() ?? ""
-                    : "",
+            Name = root.TryGetProperty("name", out var name)
+                ? name.GetString() ?? ""
+                : "",
 
-            HtmlUrl =
-                root.TryGetProperty("html_url", out var html)
-                    ? html.GetString() ?? ""
-                    : "",
+            HtmlUrl = root.TryGetProperty("html_url", out var html)
+                ? html.GetString() ?? ""
+                : "",
 
-            Body =
-                root.TryGetProperty("body", out var body)
-                    ? body.GetString() ?? ""
-                    : ""
+            Body = root.TryGetProperty("body", out var body)
+                ? body.GetString() ?? ""
+                : ""
         };
 
         if (root.TryGetProperty("assets", out var assets))
         {
             foreach (var asset in assets.EnumerateArray())
             {
-                var fileName =
-                    asset.TryGetProperty("name", out var assetName)
-                        ? assetName.GetString() ?? ""
-                        : "";
+                var fileName = asset.TryGetProperty("name", out var assetName)
+                    ? assetName.GetString() ?? ""
+                    : "";
 
                 if (fileName.Equals(
                     "TweakOS.exe",
@@ -109,15 +104,15 @@ public sealed class ReleaseService
 
     public static void OpenUrl(string url)
     {
-        if (!string.IsNullOrWhiteSpace(url))
-        {
-            Process.Start(
-                new ProcessStartInfo
-                {
-                    FileName = url,
-                    UseShellExecute = true
-                });
-        }
+        if (string.IsNullOrWhiteSpace(url))
+            return;
+
+        Process.Start(
+            new ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            });
     }
 
     public async Task<string> DownloadUpdateAsync(
@@ -129,18 +124,16 @@ public sealed class ReleaseService
                 "Für dieses Release wurde keine TweakOS.exe gefunden.");
         }
 
-        var tempDirectory =
-            Path.Combine(
-                Path.GetTempPath(),
-                "TweakOS",
-                "Update");
+        var tempDirectory = Path.Combine(
+            Path.GetTempPath(),
+            "TweakOS",
+            "Update");
 
         Directory.CreateDirectory(tempDirectory);
 
-        var exePath =
-            Path.Combine(
-                tempDirectory,
-                UpdateFileName);
+        var exePath = Path.Combine(
+            tempDirectory,
+            UpdateFileName);
 
         using var client = new HttpClient();
 
@@ -149,10 +142,9 @@ public sealed class ReleaseService
         client.DefaultRequestHeaders.UserAgent.ParseAdd(
             "TweakOS/5.0");
 
-        using var response =
-            await client.GetAsync(
-                release.DownloadUrl,
-                HttpCompletionOption.ResponseHeadersRead);
+        using var response = await client.GetAsync(
+            release.DownloadUrl,
+            HttpCompletionOption.ResponseHeadersRead);
 
         response.EnsureSuccessStatusCode();
 
@@ -193,38 +185,41 @@ public sealed class ReleaseService
                 currentDirectory,
                 "TweakOS.exe");
 
-        var source =
-            EscapePowerShell(downloadedExePath);
+        var source = EscapePowerShell(
+            downloadedExePath);
 
-        var target =
-            EscapePowerShell(currentApp);
+        var target = EscapePowerShell(
+            currentApp);
 
-        var script = $"""
-@echo off
-setlocal
+        // Wichtig:
+        // Hier verwenden wir KEINEN interpolierten Raw-String.
+        // Dadurch gibt es keine Probleme mit $ oder {}.
 
-timeout /t 2 /nobreak >nul
-
-powershell.exe -NoProfile -ExecutionPolicy Bypass -Command ^
-"$source='{source}'; ^
-$target='{target}'; ^
-Start-Sleep -Seconds 1; ^
-for($i=0;$i -lt 20;$i++) {{ ^
-    try {{ ^
-        if(Test-Path $target) {{ ^
-            Remove-Item $target -Force -ErrorAction Stop ^
-        }} ^
-        Copy-Item $source $target -Force -ErrorAction Stop; ^
-        break ^
-    }} catch {{ ^
-        Start-Sleep -Milliseconds 500 ^
-    }} ^
-}}; ^
-Remove-Item $source -Force -ErrorAction SilentlyContinue; ^
-Start-Process '{target}'"
-
-del "%~f0"
-""";
+        var script =
+            "@echo off\r\n" +
+            "setlocal\r\n" +
+            "\r\n" +
+            "timeout /t 2 /nobreak >nul\r\n" +
+            "\r\n" +
+            "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command " +
+            "\"$source='" + source + "'; " +
+            "$target='" + target + "'; " +
+            "Start-Sleep -Seconds 1; " +
+            "for($i=0;$i -lt 20;$i++) { " +
+            "try { " +
+            "if(Test-Path $target) { " +
+            "Remove-Item $target -Force -ErrorAction Stop " +
+            "} " +
+            "Copy-Item $source $target -Force -ErrorAction Stop; " +
+            "break " +
+            "} catch { " +
+            "Start-Sleep -Milliseconds 500 " +
+            "} " +
+            "}; " +
+            "Remove-Item $source -Force -ErrorAction SilentlyContinue; " +
+            "Start-Process $target\"\r\n" +
+            "\r\n" +
+            "del \"%~f0\"\r\n";
 
         File.WriteAllText(
             updaterPath,
@@ -236,7 +231,9 @@ del "%~f0"
     private static string EscapePowerShell(
         string value)
     {
-        return value.Replace("'", "''");
+        return value.Replace(
+            "'",
+            "''");
     }
 
     public static void StartUpdater(
