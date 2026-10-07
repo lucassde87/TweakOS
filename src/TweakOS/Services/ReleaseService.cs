@@ -14,17 +14,17 @@ jobs:
 
     steps:
 
-      # ==============================
-      # CHECKOUT
-      # ==============================
+      # ========================================
+      # REPOSITORY
+      # ========================================
 
       - name: Checkout
         uses: actions/checkout@v4
 
 
-      # ==============================
-      # .NET
-      # ==============================
+      # ========================================
+      # .NET 8
+      # ========================================
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -32,9 +32,9 @@ jobs:
           dotnet-version: '8.0.x'
 
 
-      # ==============================
-      # VERSION AUSLESEN
-      # ==============================
+      # ========================================
+      # VERSION AUS RELEASESERVICE LESEN
+      # ========================================
 
       - name: Read Version
         id: version
@@ -49,14 +49,29 @@ jobs:
 
           $content = Get-Content $file -Raw
 
-          if ($content -match 'CurrentVersion\s*=\s*"([^"]+)"') {
+          Write-Host "Suche TweakOS Version..."
 
-              $version = $matches[1]
+          $pattern = 'CurrentVersion\s*=\s*"([^"]+)"'
+
+          if ($content -match $pattern) {
+
+              $version = $matches[1].Trim()
 
           }
           else {
 
+              Write-Host "CurrentVersion wurde nicht gefunden."
+              Write-Host ""
+              Write-Host "Gefundener Inhalt:"
+              Write-Host $content
+
               throw "CurrentVersion wurde nicht gefunden."
+
+          }
+
+          if ($version -notmatch '^\d+\.\d+\.\d+$') {
+
+              throw "Ungültige Version: $version"
 
           }
 
@@ -65,9 +80,9 @@ jobs:
           "version=$version" >> $env:GITHUB_OUTPUT
 
 
-      # ==============================
-      # RELEASE PRÜFEN
-      # ==============================
+      # ========================================
+      # PRÜFEN OB RELEASE BEREITS EXISTIERT
+      # ========================================
 
       - name: Check existing release
         id: release_check
@@ -78,11 +93,11 @@ jobs:
         run: |
 
           $version = "${{ steps.version.outputs.version }}"
+
           $tag = "v$version"
 
           Write-Host "Prüfe Release $tag ..."
 
-          # Fehler von gh hier bewusst abfangen
           $ErrorActionPreference = "Continue"
 
           gh release view $tag 2>$null
@@ -102,13 +117,13 @@ jobs:
 
           }
 
-          # Wichtig: Der Check darf niemals den Workflow beenden
           exit 0
 
 
-      # ==============================
-      # TWEAKOS ALS EINE EXE BAUEN
-      # ==============================
+      # ========================================
+      # TWEAKOS BAUEN
+      # EINE EINZELNE EXE
+      # ========================================
 
       - name: Build TweakOS
         if: steps.release_check.outputs.exists != 'true'
@@ -125,9 +140,9 @@ jobs:
             -o publish
 
 
-      # ==============================
+      # ========================================
       # EXE PRÜFEN
-      # ==============================
+      # ========================================
 
       - name: Verify EXE
         if: steps.release_check.outputs.exists != 'true'
@@ -140,25 +155,27 @@ jobs:
 
           if (!(Test-Path $exe)) {
 
+              Write-Host ""
               Write-Host "Dateien im Publish-Ordner:"
-
               Get-ChildItem publish
 
               throw "TweakOS.exe wurde nicht erstellt."
 
           }
 
-          Write-Host "TweakOS.exe wurde erfolgreich erstellt."
-
           $size =
             (Get-Item $exe).Length / 1MB
 
-          Write-Host "EXE Größe: $([math]::Round($size,2)) MB"
+          Write-Host ""
+          Write-Host "================================"
+          Write-Host "TweakOS.exe wurde erstellt!"
+          Write-Host "Größe: $([math]::Round($size,2)) MB"
+          Write-Host "================================"
 
 
-      # ==============================
-      # RELEASE ERSTELLEN
-      # ==============================
+      # ========================================
+      # GITHUB RELEASE ERSTELLEN
+      # ========================================
 
       - name: Create GitHub Release
         if: steps.release_check.outputs.exists != 'true'
@@ -179,11 +196,11 @@ jobs:
 
             ### Download
 
-            **TweakOS.exe**
-
             TweakOS wird als einzelne Windows-EXE ausgeliefert.
 
             Keine ZIP-Datei erforderlich.
+
+            Dieses Release wurde automatisch von GitHub Actions erstellt.
 
           files: publish/TweakOS.exe
 
