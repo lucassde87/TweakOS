@@ -1,357 +1,634 @@
-```html
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>TweakOS — Windows Performance</title>
+    <title>TweakOS — Ultimate Windows Performance</title>
+    <meta name="description" content="TweakOS by Damon — Windows Performance Tweaks für Gaming, FPS, Input und Systemoptimierung.">
 
-  <meta
-    name="description"
-    content="TweakOS — moderne Windows Performance Tweaks für Gaming, Cleanup, Input und Systemoptimierung."
-  >
-
-  <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-<!-- Hintergrund -->
-<div class="background-grid"></div>
-<div class="glow glow-one"></div>
-<div class="glow glow-two"></div>
+    <!-- Background -->
+    <div class="background-grid"></div>
+    <div class="glow glow-one"></div>
+    <div class="glow glow-two"></div>
 
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <div class="nav-container">
 
-<!-- NAVIGATION -->
-<nav class="navbar">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">T</span>
+                <span>
+                    <strong>TweakOS</strong>
+                    <small>by Damon</small>
+                </span>
+            </a>
 
-  <div class="nav-inner">
+            <nav>
+                <a href="#features">Features</a>
+                <a href="#download">Download</a>
+                <a href="changelog.html">Changelog</a>
+            </nav>
 
-    <a href="index.html" class="logo">
-      <span class="logo-mark">T</span>
-
-      <span>
-        <strong>TweakOS</strong>
-        <small>by Damon</small>
-      </span>
-    </a>
-
-
-    <div class="nav-links">
-
-      <a href="#features">Features</a>
-      <a href="#download">Download</a>
-      <a href="changelog.html">Changelog</a>
-
-    </div>
-
-
-    <a href="#download" class="nav-button">
-      Download
-    </a>
-
-  </div>
-
-</nav>
-
-
-<!-- HERO -->
-<header class="hero">
-
-  <div class="hero-content">
-
-    <div class="status-pill">
-      <span class="status-dot"></span>
-      WINDOWS PERFORMANCE TOOL
-    </div>
-
-
-    <h1>
-      Dein PC.
-      <span>Deine Performance.</span>
-    </h1>
-
-
-    <p class="hero-text">
-      TweakOS ist deine zentrale Windows-Tweaking-App
-      für Gaming Performance, Cleanup, Input und
-      Systemoptimierung.
-    </p>
-
-
-    <div class="hero-actions">
-
-      <a
-        href="#"
-        id="download"
-        class="primary-button"
-      >
-        <span>Download TweakOS</span>
-        <span class="arrow">→</span>
-      </a>
-
-
-      <a
-        href="changelog.html"
-        class="secondary-button"
-      >
-        Changelog ansehen
-      </a>
-
-    </div>
-
-
-    <div
-      id="release"
-      class="version-info"
-    >
-      <span class="loading-dot"></span>
-      Aktuelle Version wird geladen …
-    </div>
-
-  </div>
-
-
-  <div class="hero-card">
-
-    <div class="window-top">
-
-      <div class="window-dots">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-
-      <span class="window-title">
-        TweakOS
-      </span>
-
-    </div>
-
-
-    <div class="dashboard">
-
-      <div class="dashboard-header">
-
-        <div>
-          <small>PERFORMANCE</small>
-          <h3>System Optimizer</h3>
-        </div>
-
-        <div class="online">
-          <span></span>
-          READY
-        </div>
-
-      </div>
-
-
-      <div class="performance">
-
-        <div class="performance-number">
-          <strong>100%</strong>
-          <span>OPTIMIZED</span>
-        </div>
-
-        <div class="performance-bars">
-
-          <div>
-            <span>CPU</span>
-            <i><b style="width:82%"></b></i>
-          </div>
-
-          <div>
-            <span>GPU</span>
-            <i><b style="width:91%"></b></i>
-          </div>
-
-          <div>
-            <span>RAM</span>
-            <i><b style="width:74%"></b></i>
-          </div>
+            <a href="#download" class="nav-download">
+                Download
+            </a>
 
         </div>
+    </header>
 
-      </div>
+
+    <!-- HERO -->
+    <main>
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <div class="status-badge">
+                    <span class="status-dot"></span>
+                    TweakOS ist aktiv
+                </div>
+
+                <h1>
+                    Dein Windows.
+                    <span>Optimiert.</span>
+                </h1>
+
+                <p class="hero-text">
+                    TweakOS ist eine moderne Windows-Tweak-App,
+                    entwickelt für maximale Performance, bessere
+                    Reaktionszeit und ein optimiertes Gaming-Erlebnis.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="#download" class="button primary">
+                        <span>↓</span>
+                        TweakOS herunterladen
+                    </a>
+
+                    <a href="#features" class="button secondary">
+                        Features ansehen
+                        <span>→</span>
+                    </a>
+                </div>
+
+                <div class="hero-info">
+                    <div>
+                        <strong id="hero-version">v5.0.0</strong>
+                        <span>Aktuelle Version</span>
+                    </div>
+
+                    <div class="separator"></div>
+
+                    <div>
+                        <strong>Windows</strong>
+                        <span>Win 10 / 11</span>
+                    </div>
+
+                    <div class="separator"></div>
+
+                    <div>
+                        <strong>100%</strong>
+                        <span>Kostenlos</span>
+                    </div>
+                </div>
+
+            </div>
 
 
-      <div class="tweak-preview">
+            <!-- APP PREVIEW -->
+            <div class="app-preview">
 
-        <div class="preview-item">
-          <span class="preview-icon">⚡</span>
+                <div class="window-glow"></div>
 
-          <div>
-            <strong>Gaming Tweaks</strong>
-            <small>Performance</small>
-          </div>
+                <div class="app-window">
 
-          <span class="check">✓</span>
+                    <div class="app-topbar">
+                        <div class="app-brand">
+                            <div class="mini-logo">T</div>
+
+                            <div>
+                                <strong>TweakOS</strong>
+                                <span>Performance Center</span>
+                            </div>
+                        </div>
+
+                        <div class="window-controls">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+
+
+                    <div class="app-body">
+
+                        <aside class="sidebar">
+
+                            <div class="side-item active">
+                                <span>⌂</span>
+                                Dashboard
+                            </div>
+
+                            <div class="side-item">
+                                <span>⚡</span>
+                                Tweaks
+                            </div>
+
+                            <div class="side-item">
+                                <span>◉</span>
+                                Performance
+                            </div>
+
+                            <div class="side-item">
+                                <span>⚙</span>
+                                Settings
+                            </div>
+
+                            <div class="sidebar-bottom">
+                                <span>●</span>
+                                System Ready
+                            </div>
+
+                        </aside>
+
+
+                        <div class="dashboard">
+
+                            <div class="dashboard-header">
+                                <div>
+                                    <span class="eyebrow">WELCOME BACK</span>
+                                    <h3>Performance Center</h3>
+                                </div>
+
+                                <div class="online">
+                                    <span></span>
+                                    ONLINE
+                                </div>
+                            </div>
+
+
+                            <div class="performance-card">
+
+                                <div class="performance-title">
+                                    <span>System Performance</span>
+                                    <strong>OPTIMIZED</strong>
+                                </div>
+
+                                <div class="performance-number">
+                                    <strong>98</strong>
+                                    <span>%</span>
+                                </div>
+
+                                <div class="performance-bar">
+                                    <div></div>
+                                </div>
+
+                                <div class="performance-stats">
+                                    <span>CPU <b>34%</b></span>
+                                    <span>RAM <b>42%</b></span>
+                                    <span>GPU <b>51%</b></span>
+                                </div>
+
+                            </div>
+
+
+                            <div class="mini-cards">
+
+                                <div class="mini-card">
+                                    <div class="mini-card-icon">⚡</div>
+                                    <span>Gaming</span>
+                                    <strong>Optimized</strong>
+                                </div>
+
+                                <div class="mini-card">
+                                    <div class="mini-card-icon">◈</div>
+                                    <span>Input</span>
+                                    <strong>Enhanced</strong>
+                                </div>
+
+                                <div class="mini-card">
+                                    <div class="mini-card-icon">✦</div>
+                                    <span>System</span>
+                                    <strong>Clean</strong>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- TRUST BAR -->
+        <section class="trust-bar">
+
+            <div>
+                <span class="trust-icon">⚡</span>
+                <div>
+                    <strong>Performance First</strong>
+                    <small>Für Gaming optimiert</small>
+                </div>
+            </div>
+
+            <div>
+                <span class="trust-icon">◉</span>
+                <div>
+                    <strong>Open Development</strong>
+                    <small>Updates über GitHub</small>
+                </div>
+            </div>
+
+            <div>
+                <span class="trust-icon">↻</span>
+                <div>
+                    <strong>Auto Updates</strong>
+                    <small>Immer aktuell bleiben</small>
+                </div>
+            </div>
+
+            <div>
+                <span class="trust-icon">✓</span>
+                <div>
+                    <strong>Kostenlos</strong>
+                    <small>Keine versteckten Kosten</small>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- FEATURES -->
+        <section class="section" id="features">
+
+            <div class="section-heading">
+
+                <span class="section-label">FEATURES</span>
+
+                <h2>
+                    Mehr Leistung.
+                    <span>Weniger Ballast.</span>
+                </h2>
+
+                <p>
+                    TweakOS bündelt wichtige Windows-Optimierungen
+                    in einer einfachen und modernen Oberfläche.
+                </p>
+
+            </div>
+
+
+            <div class="feature-grid">
+
+                <article class="feature-card featured">
+
+                    <div class="feature-icon">⚡</div>
+
+                    <div class="feature-number">01</div>
+
+                    <h3>Gaming Performance</h3>
+
+                    <p>
+                        Optimiere Windows für Gaming und reduziere
+                        unnötige Hintergrundprozesse.
+                    </p>
+
+                    <div class="feature-tag">
+                        FPS & PERFORMANCE
+                    </div>
+
+                </article>
+
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">◈</div>
+
+                    <div class="feature-number">02</div>
+
+                    <h3>System Cleanup</h3>
+
+                    <p>
+                        Entferne unnötige temporäre Dateien und
+                        halte dein System sauber.
+                    </p>
+
+                    <div class="feature-tag">
+                        CLEANUP
+                    </div>
+
+                </article>
+
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">⌁</div>
+
+                    <div class="feature-number">03</div>
+
+                    <h3>Input Optimization</h3>
+
+                    <p>
+                        Optimiere relevante Windows-Einstellungen
+                        für ein direkteres Eingabegefühl.
+                    </p>
+
+                    <div class="feature-tag">
+                        INPUT
+                    </div>
+
+                </article>
+
+
+                <article class="feature-card">
+
+                    <div class="feature-icon">↻</div>
+
+                    <div class="feature-number">04</div>
+
+                    <h3>Automatic Updates</h3>
+
+                    <p>
+                        Neue Versionen werden über GitHub Releases
+                        bereitgestellt und können direkt aktualisiert werden.
+                    </p>
+
+                    <div class="feature-tag">
+                        UPDATES
+                    </div>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- DOWNLOAD -->
+        <section class="download-section" id="download">
+
+            <div class="download-glow"></div>
+
+            <div class="download-content">
+
+                <span class="section-label">READY?</span>
+
+                <h2>
+                    Bring dein System
+                    <span>auf das nächste Level.</span>
+                </h2>
+
+                <p>
+                    Lade TweakOS kostenlos herunter und starte
+                    deine Windows-Optimierung.
+                </p>
+
+                <div class="download-buttons">
+
+                    <a
+                        id="download-button"
+                        href="#"
+                        class="button primary big"
+                    >
+                        <span>↓</span>
+                        TweakOS herunterladen
+                    </a>
+
+                    <a
+                        href="changelog.html"
+                        class="button secondary big"
+                    >
+                        Changelog ansehen
+                        <span>→</span>
+                    </a>
+
+                </div>
+
+                <div class="download-meta">
+
+                    <span>
+                        <i></i>
+                        Windows 10 / 11
+                    </span>
+
+                    <span>
+                        <i></i>
+                        Kostenlos
+                    </span>
+
+                    <span>
+                        <i></i>
+                        x64
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ABOUT -->
+        <section class="about-section">
+
+            <div class="about-card">
+
+                <div class="about-avatar">
+                    D
+                </div>
+
+                <div class="about-text">
+
+                    <span class="section-label">
+                        CREATOR
+                    </span>
+
+                    <h2>
+                        Entwickelt von
+                        <span>Damon.</span>
+                    </h2>
+
+                    <p>
+                        TweakOS wird kontinuierlich weiterentwickelt,
+                        verbessert und mit neuen Tweaks und Features
+                        ausgestattet.
+                    </p>
+
+                </div>
+
+                <div class="about-version">
+
+                    <span>CURRENT BUILD</span>
+
+                    <strong id="about-version">
+                        v5.0.0
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer>
+
+        <div class="footer-container">
+
+            <div class="footer-brand">
+
+                <div class="logo">
+                    <span class="logo-icon">T</span>
+
+                    <span>
+                        <strong>TweakOS</strong>
+                        <small>by Damon</small>
+                    </span>
+                </div>
+
+                <p>
+                    Windows Performance. Simplified.
+                </p>
+
+            </div>
+
+
+            <div class="footer-links">
+
+                <a href="#features">Features</a>
+                <a href="#download">Download</a>
+                <a href="changelog.html">Changelog</a>
+
+            </div>
+
         </div>
 
 
-        <div class="preview-item">
-          <span class="preview-icon">🧹</span>
+        <div class="footer-bottom">
 
-          <div>
-            <strong>System Cleanup</strong>
-            <small>Windows</small>
-          </div>
+            <span>
+                © 2026 Damon — TweakOS
+            </span>
 
-          <span class="check">✓</span>
+            <span>
+                Built for gamers.
+            </span>
+
         </div>
 
-
-        <div class="preview-item">
-          <span class="preview-icon">🎯</span>
-
-          <div>
-            <strong>Input Optimization</strong>
-            <small>Latency</small>
-          </div>
-
-          <span class="check">✓</span>
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</header>
+    </footer>
 
 
-<!-- TRUST BAR -->
-<section class="trust">
+    <!-- VERSION / DOWNLOAD SCRIPT -->
+    <script>
 
-  <div>
-    <strong>01</strong>
-    <span>Centralized Tweaks</span>
-  </div>
+        const RELEASE_API =
+            "https://api.github.com/repos/lucassde87/TweakOS/releases/latest";
 
-  <div>
-    <strong>02</strong>
-    <span>Automatic Updates</span>
-  </div>
+        const downloadButton =
+            document.getElementById("download-button");
 
-  <div>
-    <strong>03</strong>
-    <span>Windows Optimized</span>
-  </div>
+        const heroVersion =
+            document.getElementById("hero-version");
 
-  <div>
-    <strong>04</strong>
-    <span>Built by Damon</span>
-  </div>
-
-</section>
+        const aboutVersion =
+            document.getElementById("about-version");
 
 
-<!-- FEATURES -->
-<section
-  id="features"
-  class="section"
->
+        async function loadLatestRelease() {
 
-  <div class="section-heading">
+            try {
 
-    <span class="section-label">
-      WHY TWEAKOS
-    </span>
+                const response =
+                    await fetch(RELEASE_API, {
+                        headers: {
+                            "Accept": "application/vnd.github+json"
+                        }
+                    });
 
-    <h2>
-      Alles, was dein System braucht.
-    </h2>
+                if (!response.ok) {
+                    throw new Error("Release konnte nicht geladen werden.");
+                }
 
-    <p>
-      TweakOS bündelt wichtige Windows-Optimierungen
-      in einer modernen und einfachen Oberfläche.
-    </p>
-
-  </div>
+                const release =
+                    await response.json();
 
 
-  <div class="feature-grid">
+                const version =
+                    release.tag_name || "v5.0.0";
 
 
-    <article class="feature-card featured">
+                heroVersion.textContent =
+                    version;
 
-      <div class="feature-number">
-        01
-      </div>
-
-      <div class="feature-icon">
-        ⚡
-      </div>
-
-      <h3>
-        Gaming Performance
-      </h3>
-
-      <p>
-        Optimiere dein Windows-System für Gaming
-        und reduziere unnötige Hintergrundprozesse.
-      </p>
-
-      <span class="feature-link">
-        PERFORMANCE →
-      </span>
-
-    </article>
+                aboutVersion.textContent =
+                    version;
 
 
-    <article class="feature-card">
-
-      <div class="feature-number">
-        02
-      </div>
-
-      <div class="feature-icon">
-        🧹
-      </div>
-
-      <h3>
-        System Cleanup
-      </h3>
-
-      <p>
-        Entferne unnötige Dateien und optimiere
-        dein System mit wenigen Klicks.
-      </p>
-
-      <span class="feature-link">
-        CLEANUP →
-      </span>
-
-    </article>
+                const asset =
+                    release.assets?.find(
+                        file =>
+                            file.name === "TweakOS-win-x64.zip"
+                    );
 
 
-    <article class="feature-card">
+                if (asset) {
 
-      <div class="feature-number">
-        03
-      </div>
+                    downloadButton.href =
+                        asset.browser_download_url;
 
-      <div class="feature-icon">
-        🎯
-      </div>
+                    downloadButton.target =
+                        "_blank";
 
-      <h3>
-        Input Optimization
-      </h3>
+                    downloadButton.rel =
+                        "noopener";
 
-      <p>
-        Tweaks für Mouse, Keyboard und Windows Input,
-        damit dein System direkt reagiert.
-      </p>
+                } else {
 
-      <span class="feature-link">
-        INPUT →
-      </span>
+                    downloadButton.href =
+                        release.html_url;
 
-    </article>
+                    downloadButton.target =
+                        "_blank";
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "TweakOS Release Fehler:",
+                    error
+                );
+
+                downloadButton.href =
+                    "https://github.com/lucassde87/TweakOS/releases/latest";
+
+                downloadButton.target =
+                    "_blank";
+
+            }
+
+        }
 
 
-    <article class="feat
-```
+        loadLatestRelease();
+
+    </script>
+
+</body>
+</html>
