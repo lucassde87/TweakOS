@@ -1,1 +1,256 @@
-<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TweakOS Changelog</title><link rel="stylesheet" href="styles.css"></head><body><nav><b>TweakOS</b><div><a href="index.html">Download</a><a href="changelog.html">Changelog</a></div></nav><main><span class="pill">CHANGELOG</span><h1>Was ist neu?</h1><p class="muted">Automatisch aus deinen veröffentlichten Releases.</p><div id="list">Lade …</div></main><footer>© TweakOS</footer><script>fetch('https://api.github.com/repos/lucassde87/tweak/releases').then(r=>r.json()).then(rs=>document.getElementById('list').innerHTML=rs.slice(0,20).map(r=>'<article class="card"><div class="version">'+r.tag_name+'</div><h2>'+(r.name||'Update')+'</h2><p>'+((r.body||'Keine Notizen.').replaceAll('\n','<br>'))+'</p><small>'+new Date(r.published_at).toLocaleString('de-DE')+'</small></article>').join('')).catch(()=>document.getElementById('list').textContent='Changelog konnte nicht geladen werden.');</script></body></html>
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>TweakOS – Changelog</title>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<nav>
+  <b>TweakOS</b>
+
+  <div>
+    <a href="index.html">Home</a>
+    <a href="changelog.html">Changelog</a>
+  </div>
+</nav>
+
+<main class="changelog">
+
+  <span class="pill">TWEAKOS UPDATES</span>
+
+  <h1>
+    Changelog
+  </h1>
+
+  <p class="intro">
+    Alle veröffentlichten TweakOS-Versionen.
+  </p>
+
+  <div id="loading" class="card">
+    Releases werden geladen …
+  </div>
+
+  <div id="releases"></div>
+
+</main>
+
+<footer>
+  © TweakOS
+</footer>
+
+
+<script>
+
+const API =
+  "https://api.github.com/repos/lucassde87/TweakOS/releases";
+
+const releasesContainer =
+  document.getElementById("releases");
+
+const loading =
+  document.getElementById("loading");
+
+
+fetch(API)
+  .then(response => {
+
+    if (!response.ok) {
+      throw new Error("GitHub API Fehler");
+    }
+
+    return response.json();
+
+  })
+  .then(releases => {
+
+    loading.remove();
+
+    if (!releases.length) {
+
+      releasesContainer.innerHTML = `
+        <div class="card">
+          Noch keine Releases vorhanden.
+        </div>
+      `;
+
+      return;
+    }
+
+
+    releases.forEach(release => {
+
+      const version =
+        release.tag_name || "Unbekannt";
+
+      const name =
+        release.name || version;
+
+      const date =
+        release.published_at
+          ? new Date(
+              release.published_at
+            ).toLocaleDateString("de-DE")
+          : "";
+
+
+      const body =
+        release.body || "Keine Release Notes vorhanden.";
+
+
+      const card =
+        document.createElement("div");
+
+      card.className = "card release-card";
+
+
+      card.innerHTML = `
+
+        <div class="release-top">
+
+          <div>
+
+            <span class="version">
+              ${escapeHtml(version)}
+            </span>
+
+            <h2>
+              ${escapeHtml(name)}
+            </h2>
+
+          </div>
+
+          <span class="date">
+            ${escapeHtml(date)}
+          </span>
+
+        </div>
+
+
+        <div class="release-notes">
+          ${formatMarkdown(body)}
+        </div>
+
+
+        <a
+          class="button"
+          href="${release.html_url}"
+          target="_blank"
+          rel="noopener"
+        >
+          Release ansehen
+        </a>
+
+      `;
+
+
+      releasesContainer.appendChild(card);
+
+    });
+
+  })
+
+
+  .catch(error => {
+
+    console.error(error);
+
+    loading.innerHTML = `
+      <h2>Fehler</h2>
+
+      <p>
+        Die GitHub Releases konnten momentan
+        nicht geladen werden.
+      </p>
+    `;
+
+  });
+
+
+function escapeHtml(text) {
+
+  const div =
+    document.createElement("div");
+
+  div.textContent = text;
+
+  return div.innerHTML;
+
+}
+
+
+function formatMarkdown(text) {
+
+  let html =
+    escapeHtml(text);
+
+
+  html =
+    html.replace(
+      /^### (.*)$/gm,
+      "<h3>$1</h3>"
+    );
+
+
+  html =
+    html.replace(
+      /^## (.*)$/gm,
+      "<h2>$1</h2>"
+    );
+
+
+  html =
+    html.replace(
+      /^# (.*)$/gm,
+      "<h1>$1</h1>"
+    );
+
+
+  html =
+    html.replace(
+      /\*\*(.*?)\*\*/g,
+      "<strong>$1</strong>"
+    );
+
+
+  html =
+    html.replace(
+      /\*(.*?)\*/g,
+      "<em>$1</em>"
+    );
+
+
+  html =
+    html.replace(
+      /^\- (.*)$/gm,
+      "<li>$1</li>"
+    );
+
+
+  html =
+    html.replace(
+      /(<li>.*<\/li>)/gs,
+      "<ul>$1</ul>"
+    );
+
+
+  html =
+    html.replace(
+      /\n/g,
+      "<br>"
+    );
+
+
+  return html;
+
+}
+
+</script>
+
+</body>
+</html>
