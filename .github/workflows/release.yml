@@ -1,11 +1,9 @@
-```yaml
 name: TweakOS Release
-
-"on":
+on:
+  workflow_dispatch:
   push:
     tags:
-      - "v*"
-  workflow_dispatch:
+      - 'v*'
 
 permissions:
   contents: write
@@ -13,27 +11,24 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
-
     steps:
-      - name: Repository herunterladen
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: .NET installieren
+      - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "8.0.x"
+          dotnet-version: '8.0.x'
 
-      - name: TweakOS bauen
+      - name: Build TweakOS
         run: dotnet publish src/TweakOS/TweakOS.csproj -c Release -r win-x64 --self-contained true -o publish
 
-      - name: ZIP erstellen
+      - name: Create ZIP
         shell: pwsh
-        run: |
-          Compress-Archive -Path publish\* -DestinationPath TweakOS-win-x64.zip
+        run: Compress-Archive -Path publish\* -DestinationPath TweakOS-win-x64.zip
 
-      - name: GitHub Release erstellen
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: TweakOS-win-x64.zip
           generate_release_notes: true
-```
