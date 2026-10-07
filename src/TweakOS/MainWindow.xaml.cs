@@ -1,12 +1,11 @@
 using System;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Threading;
-using TweakOS.Models;
-using TweakOS.Services;
+using System.IO;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
+
+namespace TweakOS.Services;
 
 namespace TweakOS;
 
