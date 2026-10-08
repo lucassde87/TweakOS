@@ -1,280 +1,88 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TweakOS – Changelog</title>
 
-  <title>TweakOS — Changelog</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0f0f0f;
+            color: white;
+        }
 
-  <link rel="stylesheet" href="styles.css">
+        .container {
+            max-width: 900px;
+            margin: 60px auto;
+            padding: 20px;
+        }
 
-  <style>
-    .changelog-header {
-      text-align: center;
-      padding: 70px 20px 40px;
-    }
+        h1 {
+            font-size: 42px;
+            margin-bottom: 40px;
+        }
 
-    .changelog-header h1 {
-      font-size: clamp(42px, 7vw, 76px);
-      margin: 15px 0;
-    }
+        .version {
+            background: #181818;
+            border: 1px solid #292929;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
 
-    .changelog-header p {
-      opacity: .7;
-      max-width: 650px;
-      margin: auto;
-    }
+        .version h2 {
+            margin-top: 0;
+        }
 
-    .release-list {
-      max-width: 900px;
-      margin: 20px auto 80px;
-      padding: 0 20px;
-    }
+        .version ul {
+            line-height: 1.8;
+        }
 
-    .release {
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 20px;
-      padding: 28px;
-      margin-bottom: 20px;
-      backdrop-filter: blur(12px);
-    }
+        .back {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: #aaa;
+            text-decoration: none;
+        }
 
-    .release-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-
-    .release-version {
-      font-size: 30px;
-      font-weight: 800;
-    }
-
-    .release-date {
-      opacity: .6;
-      font-size: 14px;
-    }
-
-    .release-body {
-      margin-top: 20px;
-      line-height: 1.7;
-      white-space: pre-wrap;
-      opacity: .85;
-    }
-
-    .release-button {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 11px 17px;
-      border-radius: 10px;
-      background: linear-gradient(135deg,#7c5cff,#4d7cff);
-      color: white;
-      text-decoration: none;
-      font-weight: 700;
-    }
-
-    .loading {
-      text-align: center;
-      opacity: .6;
-      padding: 40px;
-    }
-
-    .error {
-      text-align: center;
-      padding: 40px;
-      color: #ff7b7b;
-    }
-  </style>
+        .back:hover {
+            color: white;
+        }
+    </style>
 </head>
 
 <body>
 
-<nav>
-  <b>TweakOS</b>
+<div class="container">
 
-  <div>
-    <a href="index.html">Website</a>
-    <a href="index.html#features">Features</a>
-    <a href="index.html#download">Download</a>
-    <a href="changelog.html">Changelog</a>
-  </div>
-</nav>
+    <a class="back" href="index.html">← Zurück zu TweakOS</a>
 
+    <h1>Changelog</h1>
 
-<header class="changelog-header">
+    <div class="version">
+        <h2>v5.0.1</h2>
 
-  <span class="pill">TWEAKOS</span>
+        <ul>
+            <li>Fehler „Tool nicht gefunden“ behoben</li>
+            <li>Desktop-Tweak-Ordner wird jetzt automatisch erkannt</li>
+            <li>ScriptRunner verbessert</li>
+            <li>Tweak-Ausführung stabilisiert</li>
+        </ul>
+    </div>
 
-  <h1>Changelog</h1>
+    <div class="version">
+        <h2>v5.0.0</h2>
 
-  <p>
-    Alle Updates, Verbesserungen und neuen Funktionen von TweakOS.
-  </p>
+        <ul>
+            <li>TweakOS v5 veröffentlicht</li>
+            <li>Neue Tweak-Verwaltung</li>
+            <li>Verbesserte Benutzeroberfläche</li>
+        </ul>
+    </div>
 
-</header>
-
-
-<main class="release-list">
-
-  <div id="releases" class="loading">
-    Lade Releases...
-  </div>
-
-</main>
-
-
-<footer>
-  TweakOS by Damon
-</footer>
-
-
-<script>
-
-const API =
-  "https://api.github.com/repos/lucassde87/TweakOS/releases";
-
-
-async function loadReleases() {
-
-  const container =
-    document.getElementById("releases");
-
-  try {
-
-    const response =
-      await fetch(API, {
-        headers: {
-          "Accept": "application/vnd.github+json"
-        }
-      });
-
-    if (!response.ok) {
-      throw new Error("GitHub API Fehler");
-    }
-
-    const releases =
-      await response.json();
-
-    if (!Array.isArray(releases) || releases.length === 0) {
-
-      container.innerHTML = `
-        <div class="loading">
-          Noch keine Releases vorhanden.
-        </div>
-      `;
-
-      return;
-    }
-
-
-    container.innerHTML = "";
-
-
-    releases.forEach(release => {
-
-      const version =
-        release.tag_name || "Unbekannte Version";
-
-      const date =
-        new Date(
-          release.published_at ||
-          release.created_at
-        );
-
-
-      const formattedDate =
-        date.toLocaleDateString("de-DE", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric"
-        });
-
-
-      const body =
-        release.body ||
-        "Keine Release-Notizen vorhanden.";
-
-
-      const article =
-        document.createElement("article");
-
-      article.className = "release";
-
-
-      article.innerHTML = `
-
-        <div class="release-top">
-
-          <div class="release-version">
-            ${escapeHtml(version)}
-          </div>
-
-          <div class="release-date">
-            ${formattedDate}
-          </div>
-
-        </div>
-
-
-        <div class="release-body">
-          ${escapeHtml(body)}
-        </div>
-
-
-        <a
-          class="release-button"
-          href="${release.html_url}"
-          target="_blank"
-          rel="noopener"
-        >
-          GitHub Release öffnen
-        </a>
-
-      `;
-
-
-      container.appendChild(article);
-
-    });
-
-
-  } catch (error) {
-
-    console.error(error);
-
-    container.innerHTML = `
-      <div class="error">
-        <h2>Changelog konnte nicht geladen werden</h2>
-
-        <p>
-          Die GitHub Releases konnten momentan nicht abgerufen werden.
-        </p>
-      </div>
-    `;
-
-  }
-
-}
-
-
-function escapeHtml(text) {
-
-  return String(text)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-
-}
-
-
-loadReleases();
-
-</script>
+</div>
 
 </body>
 </html>
