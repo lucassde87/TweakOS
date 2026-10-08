@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using TweakOS.Models;
@@ -110,12 +111,25 @@ public partial class MainWindow : Window
         }
     }
 
+    private void SetActiveNav(Button active)
+    {
+        foreach (var nav in new[] { DashboardNav, TweaksNav, PerformanceNav, SettingsNav })
+        {
+            nav.Background = Brushes.Transparent;
+            nav.Foreground = (Brush)new BrushConverter().ConvertFromString("#818192");
+        }
+
+        active.Background = (Brush)new BrushConverter().ConvertFromString("#171027");
+        active.Foreground = Brushes.White;
+    }
+
     private void Dashboard_Click(object sender, RoutedEventArgs e) => ShowDashboard();
 
     private void Tweaks_Click(object sender, RoutedEventArgs e)
     {
         HideAllPanels();
         TweaksPanel.Visibility = Visibility.Visible;
+        SetActiveNav(TweaksNav);
         RefreshTweakList();
     }
 
@@ -132,18 +146,21 @@ public partial class MainWindow : Window
     {
         HideAllPanels();
         PerformancePanel.Visibility = Visibility.Visible;
+        SetActiveNav(PerformanceNav);
     }
 
     private void Settings_Click(object sender, RoutedEventArgs e)
     {
         HideAllPanels();
         SettingsPanel.Visibility = Visibility.Visible;
+        SetActiveNav(SettingsNav);
     }
 
     private void ShowDashboard()
     {
         HideAllPanels();
         DashboardPanel.Visibility = Visibility.Visible;
+        SetActiveNav(DashboardNav);
     }
 
     private void HideAllPanels()
@@ -222,6 +239,15 @@ public partial class MainWindow : Window
                 "TweakOS", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
+
+    private void Minimize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+
+    private void Maximize_Click(object sender, RoutedEventArgs e)
+    {
+        WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+    }
+
+    private void Close_Click(object sender, RoutedEventArgs e) => Close();
 
     protected override void OnClosed(EventArgs e)
     {
