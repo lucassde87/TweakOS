@@ -171,7 +171,7 @@
                                 <Grid>
                                     <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="280"/></Grid.ColumnDefinitions>
                                     <StackPanel>
-                                        <TextBlock Text="SYSTEM PERFORMANCE" Foreground="#77778A" FontSize="9" FontWeight="SemiBold" CharacterSpacing="40"/>
+                                        <TextBlock Text="SYSTEM PERFORMANCE" Foreground="#77778A" FontSize="9" FontWeight="SemiBold"/>
                                         <StackPanel Orientation="Horizontal" Margin="0,8,0,0"><TextBlock Text="98" Foreground="White" FontSize="46" FontWeight="Bold"/><TextBlock Text="%" Foreground="{StaticResource Purple}" FontSize="24" FontWeight="Bold" VerticalAlignment="Bottom" Margin="5,0,0,7"/></StackPanel>
                                         <TextBlock Text="Your system is ready for peak performance." Foreground="#77778A" FontSize="10"/>
                                         <Border Height="6" Background="#191622" CornerRadius="3" Margin="0,14,0,0"><Border Width="0.98" Background="{StaticResource Purple}" CornerRadius="3" HorizontalAlignment="Left"/></Border>
