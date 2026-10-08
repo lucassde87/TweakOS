@@ -9,39 +9,28 @@ using System.Windows.Threading;
 using TweakOS.Models;
 using TweakOS.Services;
 
-namespace TweakOS
-{
+namespace TweakOS;
+
 public partial class MainWindow : Window
 {
-private readonly TweakCatalogService _catalogService;
-private readonly ReleaseService _releaseService;
-
-
+    private readonly TweakCatalogService _catalogService = new();
+    private readonly ReleaseService _releaseService = new();
+    private readonly ScriptRunner _scriptRunner = new();
     private readonly ObservableCollection<TweakDefinition> _allTweaks = new();
 
     private PerformanceCounter? _cpuCounter;
     private PerformanceCounter? _ramCounter;
-
     private readonly DispatcherTimer _performanceTimer;
+    private string _selectedCategory = "FPS Tweaks";
 
     public MainWindow()
     {
         InitializeComponent();
 
-        _catalogService = new TweakCatalogService();
-        _releaseService = new ReleaseService();
-
         try
         {
-            _cpuCounter = new PerformanceCounter(
-                "Processor",
-                "% Processor Time",
-                "_Total");
-
-            _ramCounter = new PerformanceCounter(
-                "Memory",
-                "% Committed Bytes In Use");
-
+            _cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+            _ramCounter = new PerformanceCounter("Memory", "% Committed Bytes In Use");
             _cpuCounter.NextValue();
             _ramCounter.NextValue();
         }
@@ -51,16 +40,11 @@ private readonly ReleaseService _releaseService;
             _ramCounter = null;
         }
 
-        _performanceTimer = new DispatcherTimer
-        {
-            Interval = TimeSpan.FromSeconds(1)
-        };
-
+        _performanceTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
         _performanceTimer.Tick += PerformanceTimer_Tick;
         _performanceTimer.Start();
 
         _ = LoadTweaksAsync();
-
         ShowDashboard();
     }
 
@@ -69,26 +53,18 @@ private readonly ReleaseService _releaseService;
         try
         {
             var catalog = await _catalogService.LoadAsync();
-
             _allTweaks.Clear();
 
-            foreach (var tweak in catalog.Tweaks)
-            {
+            foreach (var tweak in catalog.Tweaks.Where(x => x.Enabled))
                 _allTweaks.Add(tweak);
-            }
 
             RefreshTweakList();
         }
         catch (Exception ex)
         {
             TweakList.ItemsSource = null;
-
-            MessageBox.Show(
-                "Der Tweak-Katalog konnte nicht geladen werden.\n\n" +
-                ex.Message,
-                "TweakOS",
-                MessageBoxButton.OK,
-                MessageBoxImage.Warning);
+            MessageBox.Show("Der Tweak-Katalog konnte nicht geladen werden.\n\n" + ex.Message,
+                "TweakOS", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
@@ -96,78 +72,59 @@ private readonly ReleaseService _releaseService;
     {
         var search = SearchBox?.Text?.Trim() ?? "";
 
-        var filtered = string.IsNullOrWhiteSpace(search)
-            ? _allTweaks
-            : new ObservableCollection<TweakDefinition>(
-                _allTweaks.Where(x =>
-                    x.Name.Contains(
-                        search,
-                        StringComparison.OrdinalIgnoreCase) ||
-                    x.Description.Contains(
-                        search,
-                        StringComparison.OrdinalIgnoreCase)));
+        var filtered = _allTweaks.Where(x =>
+            x.Category.Equals(_selectedCategory, StringComparison.OrdinalIgnoreCase) &&
+            (string.IsNullOrWhiteSpace(search) ||
+             x.Name.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+             x.Description.Contains(search, StringComparison.OrdinalIgnoreCase)));
 
-        TweakList.ItemsSource = filtered;
+        TweakList.ItemsSource = new ObservableCollection<TweakDefinition>(filtered);
     }
 
-    private void PerformanceTimer_Tick(
-        object? sender,
-        EventArgs e)
+    private void PerformanceTimer_Tick(object? sender, EventArgs e)
     {
         try
         {
-            if (_cpuCounter != null)
-            {
-                var cpu = _cpuCounter.NextValue();
+            var cpu = _cpuCounter?.NextValue();
+            var ram = _ramCounter?.NextValue();
 
-                CpuValue.Text = $"{cpu:0}%";
-                CpuPerformanceValue.Text = $"{cpu:0}%";
-            }
-
-            if (_ramCounter != null)
-            {
-                var ram = _ramCounter.NextValue();
-
-                RamValue.Text = $"{ram:0}%";
-                RamPerformanceValue.Text = $"{ram:0}%";
-            }
+            CpuValue.Text = cpu.HasValue ? $"{cpu.Value:0}%" : "--%";
+            CpuPerformanceValue.Text = CpuValue.Text;
+            RamValue.Text = ram.HasValue ? $"{ram.Value:0}%" : "--%";
+            RamPerformanceValue.Text = RamValue.Text;
         }
         catch
         {
-            CpuValue.Text = "--%";
-            RamValue.Text = "--%";
-
-            CpuPerformanceValue.Text = "--%";
-            RamPerformanceValue.Text = "--%";
+            CpuValue.Text = CpuPerformanceValue.Text = "--%";
+            RamValue.Text = RamPerformanceValue.Text = "--%";
         }
     }
 
-    private void Dashboard_Click(
-        object sender,
-        RoutedEventArgs e)
-    {
-        ShowDashboard();
-    }
+    private void Dashboard_Click(object sender, RoutedEventArgs e) => ShowDashboard();
 
-    private void Tweaks_Click(
-        object sender,
-        RoutedEventArgs e)
+    private void Tweaks_Click(object sender, RoutedEventArgs e)
     {
         HideAllPanels();
         TweaksPanel.Visibility = Visibility.Visible;
+        RefreshTweakList();
     }
 
-    private void Performance_Click(
-        object sender,
-        RoutedEventArgs e)
+    private void Category_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button && button.Tag is string category)
+        {
+            _selectedCategory = category;
+            RefreshTweakList();
+        }
+    }
+
+    private void Performance_Click(object sender, RoutedEventArgs e)
     {
         HideAllPanels();
         PerformancePanel.Visibility = Visibility.Visible;
     }
 
-    private void Settings_Click(
-        object sender,
-        RoutedEventArgs e)
+    private void Settings_Click(object sender, RoutedEventArgs e)
     {
         HideAllPanels();
         SettingsPanel.Visibility = Visibility.Visible;
@@ -187,150 +144,80 @@ private readonly ReleaseService _releaseService;
         SettingsPanel.Visibility = Visibility.Collapsed;
     }
 
-    private void SearchBox_TextChanged(
-        object sender,
-        TextChangedEventArgs e)
+    private void SearchBox_TextChanged(object sender, TextChangedEventArgs e) => RefreshTweakList();
+
+    private async void Run_Click(object sender, RoutedEventArgs e)
     {
-        RefreshTweakList();
+        if (sender is not Button button || button.Tag is not TweakDefinition tweak)
+            return;
+
+        try
+        {
+            button.IsEnabled = false;
+            var exitCode = await _scriptRunner.RunAsync(tweak.Script);
+
+            MessageBox.Show(
+                exitCode == 0
+                    ? $"{tweak.Name} wurde erfolgreich ausgeführt."
+                    : $"{tweak.Name} wurde beendet (Exit-Code {exitCode}).",
+                "TweakOS",
+                MessageBoxButton.OK,
+                exitCode == 0 ? MessageBoxImage.Information : MessageBoxImage.Warning);
+        }
+        catch (System.ComponentModel.Win32Exception)
+        {
+            MessageBox.Show("Der Start wurde abgebrochen oder die Administratorfreigabe wurde verweigert.",
+                "TweakOS", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Tweak konnte nicht ausgeführt werden:\n\n" + ex.Message,
+                "TweakOS", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        finally
+        {
+            button.IsEnabled = true;
+        }
     }
 
-    private async void Update_Click(
-        object sender,
-        RoutedEventArgs e)
+    private async void Update_Click(object sender, RoutedEventArgs e)
     {
         try
         {
-            var release =
-                await _releaseService.GetLatestAsync();
-
-            if (release == null ||
-                string.IsNullOrWhiteSpace(release.TagName))
+            var release = await _releaseService.GetLatestAsync();
+            if (release == null || string.IsNullOrWhiteSpace(release.TagName))
             {
-                MessageBox.Show(
-                    "Kein Release gefunden.",
-                    "TweakOS",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-
+                MessageBox.Show("Kein Release gefunden.", "TweakOS");
                 return;
             }
 
-            if (!ReleaseService.IsNewer(
-                release.TagName))
+            if (!ReleaseService.IsNewer(release.TagName))
             {
-                MessageBox.Show(
-                    "Du verwendest bereits die aktuelle Version.",
-                    "TweakOS",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-
+                MessageBox.Show("Du verwendest bereits die aktuelle Version.", "TweakOS");
                 return;
             }
 
-            var result = MessageBox.Show(
-                $"Eine neue Version ist verfügbar:\n\n" +
-                $"{release.TagName}\n\n" +
-                "Möchtest du sie herunterladen?",
-                "TweakOS Update",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Information);
-
-            if (result != MessageBoxResult.Yes)
+            if (MessageBox.Show($"Eine neue Version ist verfügbar:\n\n{release.TagName}\n\nHerunterladen?",
+                    "TweakOS Update", MessageBoxButton.YesNo, MessageBoxImage.Information) != MessageBoxResult.Yes)
                 return;
 
-            var downloaded =
-                await _releaseService.DownloadUpdateAsync(
-                    release);
-
-            var updater =
-                ReleaseService.CreateUpdater(
-                    downloaded);
-
-            ReleaseService.StartUpdater(
-                updater);
-
+            var downloaded = await _releaseService.DownloadUpdateAsync(release);
+            var updater = ReleaseService.CreateUpdater(downloaded);
+            ReleaseService.StartUpdater(updater);
             Application.Current.Shutdown();
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                "Update fehlgeschlagen:\n\n" +
-                ex.Message,
-                "TweakOS",
-                MessageBoxButton.OK,
-                MessageBoxImage.Error);
+            MessageBox.Show("Update fehlgeschlagen:\n\n" + ex.Message,
+                "TweakOS", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
-    private void Run_Click(
-        object sender,
-        RoutedEventArgs e)
-    {
-        if (sender is not Button button)
-            return;
-
-        if (button.Tag is not TweakDefinition tweak)
-            return;
-
-        try
-        {
-            if (string.IsNullOrWhiteSpace(
-                tweak.Script))
-            {
-                MessageBox.Show(
-                    "Für diesen Tweak wurde kein Script hinterlegt.",
-                    "TweakOS",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-
-                return;
-            }
-
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "powershell.exe",
-                    Arguments =
-                        "-NoProfile " +
-                        "-ExecutionPolicy Bypass " +
-                        "-Command " +
-                        $"\"{tweak.Script}\"",
-
-                    UseShellExecute = true,
-                    Verb = "runas"
-                }
-            };
-
-            process.Start();
-
-            MessageBox.Show(
-                $"{tweak.Name} wurde ausgeführt.",
-                "TweakOS",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(
-                "Tweak konnte nicht ausgeführt werden:\n\n" +
-                ex.Message,
-                "TweakOS",
-                MessageBoxButton.OK,
-                MessageBoxImage.Error);
-        }
-    }
-
-    protected override void OnClosed(
-        EventArgs e)
+    protected override void OnClosed(EventArgs e)
     {
         _performanceTimer.Stop();
-
         _cpuCounter?.Dispose();
         _ramCounter?.Dispose();
-
         base.OnClosed(e);
     }
-}
-
 }
