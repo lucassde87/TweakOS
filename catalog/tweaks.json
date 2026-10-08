@@ -1,87 +1,72 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": 2,
-  "updatedAt": "2026-10-07T00:00:00Z",
+  "catalogVersion": 3,
+  "updatedAt": "2026-10-08T00:00:00Z",
   "releaseNotes": [
-    "Added Disable USB Powersaving",
-    "Added Optimize Windows Settings",
-    "Added Damon Network V1",
-    "Added Damon FPS / Process Lowering V2 as legacy/critical"
+    "Reworked Tweak Center into FPS Tweaks, Network and Clearen.",
+    "Removed legacy tweak entries from the active catalog.",
+    "Added direct EXE/BAT/PS1 execution support."
   ],
   "tweaks": [
     {
-      "id": "bcd-timers",
-      "name": "BCD Timers",
+      "id": "fps-tweaks",
+      "name": "FPS Tweaks",
       "version": 1,
-      "category": "Performance",
-      "description": "Ändert BCD-Timer-Einstellungen mit bcdedit.",
-      "risk": "critical",
+      "category": "FPS Tweaks",
+      "description": "Startet das FPS-Tweak-Paket aus dem lokalen tweaks/bin-Ordner.",
+      "risk": "high",
       "requiresAdmin": true,
       "enabled": true,
-      "script": "tweaks/bcd-timers.bat",
+      "script": "tweaks/bin/FpsTweaks.exe",
+      "reviewStatus": "needs-review"
+    },
+    {
+      "id": "cpu-unpark",
+      "name": "CPU Unpark",
+      "version": 1,
+      "category": "FPS Tweaks",
+      "description": "Startet das CPU-Unpark-Tool.",
+      "risk": "medium",
+      "requiresAdmin": true,
+      "enabled": true,
+      "script": "tweaks/bin/UnparkCpu.exe",
+      "reviewStatus": "needs-review"
+    },
+    {
+      "id": "msi-utility",
+      "name": "MSI Utility",
+      "version": 1,
+      "category": "Network",
+      "description": "Startet MSI Utility lokal ohne externe Downloads.",
+      "risk": "medium",
+      "requiresAdmin": true,
+      "enabled": true,
+      "script": "tweaks/bin/MSI_util_v3.exe",
+      "reviewStatus": "needs-review"
+    },
+    {
+      "id": "tcp-optimizer",
+      "name": "TCP Optimizer",
+      "version": 1,
+      "category": "Network",
+      "description": "Startet TCP Optimizer lokal aus dem TweakOS-Paket.",
+      "risk": "medium",
+      "requiresAdmin": true,
+      "enabled": true,
+      "script": "tweaks/bin/TCPOptimizer.exe",
       "reviewStatus": "needs-review"
     },
     {
       "id": "windows-cleanup",
       "name": "Windows Cleanup",
       "version": 1,
-      "category": "Cleanup",
-      "description": "Bereinigt Temp-Dateien und Logs und setzt Windows-Update-Komponenten zurück.",
-      "risk": "high",
+      "category": "Clearen",
+      "description": "Bereinigt temporäre Windows-Dateien und Logs.",
+      "risk": "medium",
       "requiresAdmin": true,
       "enabled": true,
       "script": "tweaks/windows-cleanup.bat",
       "reviewStatus": "needs-review"
-    },
-    {
-      "id": "disable-usb-powersaving",
-      "name": "Disable USB Powersaving",
-      "version": 1,
-      "category": "USB / Power",
-      "description": "Deaktiviert über WMI MSPower_DeviceEnable die Power-Saving-Funktion für entsprechende Geräte.",
-      "risk": "high",
-      "requiresAdmin": true,
-      "enabled": true,
-      "script": "tweaks/disable-usb-powersaving.ps1",
-      "reviewStatus": "needs-review"
-    },
-    {
-      "id": "optimize-windows-settings",
-      "name": "Optimize Windows Settings",
-      "version": 1,
-      "category": "Windows",
-      "description": "Setzt zahlreiche Registry-/Windows-Einstellungen für Telemetrie, Game Bar, Hintergrund-Apps, Transparenz und weitere Optionen.",
-      "risk": "high",
-      "requiresAdmin": true,
-      "enabled": true,
-      "script": "tweaks/optimize-windows-settings.bat",
-      "reviewStatus": "needs-review"
-    },
-    {
-      "id": "damons-network-v1",
-      "name": "Damon Network V1",
-      "version": 1,
-      "category": "Network",
-      "description": "Legacy-Netzwerkpaket mit Firewall-/TCP-/AFD-Änderungen und Download externer MSI-Utility-Dateien.",
-      "risk": "critical",
-      "requiresAdmin": true,
-      "enabled": false,
-      "script": "tweaks/network-damons-network-v1.bat",
-      "reviewStatus": "needs-review",
-      "externalDownloads": true
-    },
-    {
-      "id": "damons-fps-v2",
-      "name": "Damon FPS / Process Lowering V2",
-      "version": 1,
-      "category": "FPS / Performance",
-      "description": "Großes Legacy-Paket mit Windows Settings, Debloat, CPU-, IO-, Power-, Update-, Temp- und Data-Queue-Optionen.",
-      "risk": "critical",
-      "requiresAdmin": true,
-      "enabled": false,
-      "script": "tweaks/fps-damons-process-lowering-v2.bat",
-      "reviewStatus": "legacy-review-required",
-      "externalDownloads": true
     }
   ]
 }
