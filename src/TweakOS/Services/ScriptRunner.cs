@@ -7,16 +7,14 @@ public sealed class ScriptRunner
 {
     public async Task<int> RunAsync(string path)
     {
-        var fullPath = Path.IsPathRooted(path)
-            ? path
-            : Path.Combine(AppContext.BaseDirectory, path);
-
-        fullPath = Path.GetFullPath(fullPath);
+        var fullPath = ResolveTweakPath(path);
 
         if (!File.Exists(fullPath))
+        {
             throw new FileNotFoundException(
-                $"Tool nicht gefunden: {fullPath}",
+                $"Tool nicht gefunden:\n\n{fullPath}",
                 fullPath);
+        }
 
         var ext = Path.GetExtension(fullPath).ToLowerInvariant();
 
@@ -30,8 +28,7 @@ public sealed class ScriptRunner
                 Arguments = $"-NoProfile -ExecutionPolicy Bypass -File \"{fullPath}\"",
                 UseShellExecute = true,
                 Verb = "runas",
-                WorkingDirectory =
-                    Path.GetDirectoryName(fullPath) ?? AppContext.BaseDirectory
+                WorkingDirectory = Path.GetDirectoryName(fullPath)!
             };
         }
         else if (ext is ".bat" or ".cmd")
@@ -42,8 +39,7 @@ public sealed class ScriptRunner
                 Arguments = $"/c \"{fullPath}\"",
                 UseShellExecute = true,
                 Verb = "runas",
-                WorkingDirectory =
-                    Path.GetDirectoryName(fullPath) ?? AppContext.BaseDirectory
+                WorkingDirectory = Path.GetDirectoryName(fullPath)!
             };
         }
         else if (ext == ".reg")
@@ -54,8 +50,7 @@ public sealed class ScriptRunner
                 Arguments = $"\"{fullPath}\"",
                 UseShellExecute = true,
                 Verb = "runas",
-                WorkingDirectory =
-                    Path.GetDirectoryName(fullPath) ?? AppContext.BaseDirectory
+                WorkingDirectory = Path.GetDirectoryName(fullPath)!
             };
         }
         else
@@ -65,8 +60,7 @@ public sealed class ScriptRunner
                 FileName = fullPath,
                 UseShellExecute = true,
                 Verb = "runas",
-                WorkingDirectory =
-                    Path.GetDirectoryName(fullPath) ?? AppContext.BaseDirectory
+                WorkingDirectory = Path.GetDirectoryName(fullPath)!
             };
         }
 
@@ -77,5 +71,57 @@ public sealed class ScriptRunner
         await process.WaitForExitAsync();
 
         return process.ExitCode;
+    }
+
+    private static string ResolveTweakPath(string path)
+    {
+        // Absoluter Pfad -> direkt verwenden
+        if (Path.IsPathRooted(path))
+            return Path.GetFullPath(path);
+
+        var relativePath = path.Replace('/', Path.DirectorySeparatorChar);
+
+        // 1. Neben der TweakOS-EXE suchen
+        var appPath = Path.GetFullPath(
+            Path.Combine(AppContext.BaseDirectory, relativePath));
+
+        if (File.Exists(appPath))
+            return appPath;
+
+        // 2. Auf dem Desktop suchen
+        var desktop = Environment.GetFolderPath(
+            Environment.SpecialFolder.DesktopDirectory);
+
+        // catalog path: tweaks/FPS Tweaks/...
+        // Desktop path: FPS Tweaks/...
+        if (relativePath.StartsWith(
+                "tweaks" + Path.DirectorySeparatorChar,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            relativePath = relativePath[
+                ("tweaks" + Path.DirectorySeparatorChar).Length..];
+        }
+
+        var desktopPath = Path.GetFullPath(
+            Path.Combine(desktop, relativePath));
+
+        if (File.Exists(desktopPath))
+            return desktopPath;
+
+        // 3. Downloads als zusätzliche Möglichkeit
+        var downloads = Path.Combine(
+            Environment.GetFolderPath(
+                Environment.SpecialFolder.UserProfile),
+            "Downloads");
+
+        var downloadsPath = Path.GetFullPath(
+            Path.Combine(downloads, relativePath));
+
+        if (File.Exists(downloadsPath))
+            return downloadsPath;
+
+        // Wenn nichts gefunden wurde, Desktop-Pfad zurückgeben,
+        // damit die Fehlermeldung verständlich bleibt.
+        return desktopPath;
     }
 }
