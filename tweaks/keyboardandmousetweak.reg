@@ -1,0 +1,109 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\kbdclass\Parameters]
+"ConnectMultiplePorts"=dword:00000000
+"KeyboardDataQueueSize"=dword:00000010
+"KeyboardDeviceBaseName"="KeyboardClass"
+"MaximumPortsServiced"=dword:00000001
+"SendOutputToAllPorts"=dword:00000001
+"WppRecorder_TraceGuid"="{09281f1f-f66e-485a-99a2-91638f782c49}"
+
+[HKEY_CURRENT_USER\Control Panel\Keyboard]
+"InitialKeyboardIndicators"="0"
+"KeyboardDelay"="0"
+"KeyboardSpeed"="31"
+"My Regedit"="30"
+
+[HKEY_CURRENT_USER\Control Panel\Accessibility\Keyboard Response]
+"AutoRepeatDelay"="0"
+"AutoRepeatRate"="0"
+"BounceTime"="0"
+"DelayBeforeAcceptance"="0"
+"Flags"="0"
+"Last BounceKey Setting"=dword:00000000
+"Last Valid Delay"=dword:00000000
+"Last Valid Repeat"=dword:00000000
+"Last Valid Wait"=dword:00000000
+
+[HKEY_CURRENT_USER\Control Panel\Accessibility\MouseKeys]
+"Flags"="0"
+"MaximumSpeed"="80"
+"TimeToMaximumSpeed"="3000"
+
+[HKEY_CURRENT_USER\Control Panel\Accessibility\StickyKeys]
+"Flags"="0"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia]
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile]
+"NetworkThrottlingIndex"=dword:ffffffff
+"SystemResponsiveness"=dword:00000000
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games]
+"Affinity"=dword:00000000
+"Background Only"="False"
+"Clock Rate"=dword:00003e80
+"GPU Priority"=dword:00000008
+"Priority"=dword:00000007
+"Scheduling Category"="High"
+"SFIO Priority"="High"
+
+[HKEY_CURRENT_USER\Control Panel\Accessibility\ToggleKeys]
+"Flags"="0"
+
+; --- Energie auf Maximum (ohne Dienste zu deaktivieren) ---
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power]
+"CsEnabled"=dword:00000000 ; Disables Connected Standby (für bessere Reaktionszeiten)
+
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\mouclass]
+"ImagePath"=hex(2):5c,00,53,00,79,00,73,00,74,00,65,00,6d,00,52,00,6f,00,6f,00,\
+  74,00,5c,00,53,00,79,00,73,00,74,00,65,00,6d,00,33,00,32,00,5c,00,64,00,72,\
+  00,69,00,76,00,65,00,72,00,73,00,5c,00,6d,00,6f,00,75,00,63,00,6c,00,61,00,\
+  73,00,73,00,2e,00,73,00,79,00,73,00,00,00
+"Type"=dword:00000001
+"Start"=dword:00000003
+"ErrorControl"=dword:00000004
+"DisplayName"="@msmouse.inf,%mouclass.SvcDesc%;Mausklassentreiber"
+"Owners"=hex(7):6f,00,65,00,6d,00,32,00,33,00,2e,00,69,00,6e,00,66,00,00,00,6d,\
+  00,73,00,6d,00,6f,00,75,00,73,00,65,00,2e,00,69,00,6e,00,66,00,00,00,74,00,\
+  65,00,72,00,6d,00,6d,00,6f,00,75,00,2e,00,69,00,6e,00,66,00,00,00,00,00
+
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\mouclass\Parameters]
+"WppRecorder_UseTimeStamp"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\mouclass\SharedState]
+"WppRecorder_TraceGuid"="{fc8df8fd-d105-40a9-af75-2eec294adf8d}"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\mouclass\Enum]
+"Count"=dword:00000005
+"NextInstance"=dword:00000005
+"0"="HID\\VID_1038&PID_161E&MI_03&Col02\\8&1790c186&0&0001"
+"2"="HID\\VID_046D&PID_C231\\2&20a291cc&0&0000"
+"3"="HID\\VID_1038&PID_161E&MI_00&Col01\\8&5b3f126&0&0000"
+"1"="HID\\VID_1038&PID_161E&MI_02&Col01\\8&3b67ff48&0&0000"
+"4"="HID\\VID_046D&PID_C54D&MI_00\\8&1ce257a6&0&0000"
+
+[HKEY_CURRENT_USER\Control Panel\Mouse]
+"ActiveWindowTracking"=dword:00000000
+"Beep"="No"
+"DoubleClickHeight"="4"
+"DoubleClickSpeed"="200"
+"DoubleClickWidth"="4"
+"ExtendedSounds"="No"
+"MouseHoverHeight"="4"
+"MouseHoverTime"="400"
+"MouseHoverWidth"="4"
+"MouseSensitivity"="20"
+"MouseSpeed"="1"
+"MouseThreshold1"="0"
+"MouseThreshold2"="0"
+"MouseTrails"="0"
+"SmoothMouseXCurve"=hex:00,00,00,00,00,00,00,00,15,6e,00,00,00,00,00,00,00,40,\
+  01,00,00,00,00,00,29,dc,03,00,00,00,00,00,00,00,28,00,00,00,00,00
+"SmoothMouseYCurve"=hex:00,00,00,00,00,00,00,00,fd,11,01,00,00,00,00,00,00,24,\
+  04,00,00,00,00,00,00,fc,12,00,00,00,00,00,00,c0,bb,01,00,00,00,00
+"SnapToDefaultButton"="0"
+"SwapMouseButtons"="0"
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl]
+"ConvertibleSlateMode"=dword:00000000
+"Win32PrioritySeparation"=dword:00000022
