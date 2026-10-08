@@ -1,7 +1,7 @@
-<Window x:Class="TweakOS.MainWindow"
+<Window x:Class="ChugOS.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="TweakOS" Width="1240" Height="780" MinWidth="1050" MinHeight="680"
+        Title="ChugOS" Width="1240" Height="780" MinWidth="1050" MinHeight="680"
         WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="CanResize"
         AllowsTransparency="True" Background="Transparent" FontFamily="Segoe UI"
         SnapsToDevicePixels="True" UseLayoutRounding="True">
@@ -116,7 +116,7 @@
                         <Border Width="22" Height="22" CornerRadius="6" Background="#8B5CF6" Margin="0,0,9,0">
                             <TextBlock Text="T" Foreground="White" FontSize="12" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
-                        <TextBlock Text="TweakOS" Foreground="#F7F7FB" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        <TextBlock Text="ChugOS" Foreground="#F7F7FB" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,8,0">
                         <Button Style="{StaticResource WindowButton}" Content="—" Click="Minimize_Click"/>
@@ -135,13 +135,13 @@
                         <StackPanel Grid.Row="0" Margin="8,0,0,25">
                             <StackPanel Orientation="Horizontal">
                                 <Border Width="30" Height="30" CornerRadius="8" Background="#8B5CF6" Margin="0,0,10,0"><TextBlock Text="T" Foreground="White" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
-                                <StackPanel VerticalAlignment="Center"><TextBlock Text="TweakOS" Foreground="White" FontSize="22" FontWeight="Bold"/><TextBlock Text="by Damon" Foreground="#77778A" FontSize="9" Margin="0,2,0,0"/></StackPanel>
+                                <StackPanel VerticalAlignment="Center"><TextBlock Text="ChugOS" Foreground="White" FontSize="22" FontWeight="Bold"/><TextBlock Text="by Damon" Foreground="#77778A" FontSize="9" Margin="0,2,0,0"/></StackPanel>
                             </StackPanel>
                         </StackPanel>
                         <Border Grid.Row="1" Background="#10101A" BorderBrush="#242432" BorderThickness="1" CornerRadius="9" Padding="11,10" Margin="0,0,0,18">
                             <StackPanel>
                                 <StackPanel Orientation="Horizontal"><Ellipse Width="6" Height="6" Fill="{StaticResource Green}" Margin="0,0,8,0"/><TextBlock Text="SYSTEM READY" Foreground="{StaticResource Green}" FontSize="9" FontWeight="Bold"/></StackPanel>
-                                <TextBlock Text="TweakOS 5.0" Foreground="#6E6E80" FontSize="9" Margin="14,5,0,0"/>
+                                <TextBlock Text="ChugOS 5.0" Foreground="#6E6E80" FontSize="9" Margin="14,5,0,0"/>
                             </StackPanel>
                         </Border>
                         <StackPanel Grid.Row="2">
@@ -150,7 +150,7 @@
                             <Button x:Name="PerformanceNav" Content="◉   Performance" Style="{StaticResource Nav}" Click="Performance_Click"/>
                             <Button x:Name="SettingsNav" Content="⚙   Settings" Style="{StaticResource Nav}" Click="Settings_Click"/>
                         </StackPanel>
-                        <TextBlock Grid.Row="3" Text="TweakOS Performance Center" Foreground="#4E4E60" FontSize="8" Margin="8,0,0,2"/>
+                        <TextBlock Grid.Row="3" Text="ChugOS Performance Center" Foreground="#4E4E60" FontSize="8" Margin="8,0,0,2"/>
                     </Grid>
                 </Border>
 
@@ -176,14 +176,14 @@
                                         <TextBlock Text="Your system is ready for peak performance." Foreground="#77778A" FontSize="10"/>
                                         <Border Height="6" Background="#191622" CornerRadius="3" Margin="0,14,0,0"><Border Width="0.98" Background="{StaticResource Purple}" CornerRadius="3" HorizontalAlignment="Left"/></Border>
                                     </StackPanel>
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="30,0,0,0"><TextBlock Text="SYSTEM READY" Foreground="{StaticResource Green}" FontSize="10" FontWeight="Bold"/><TextBlock Text="All TweakOS modules are online." Foreground="#686879" FontSize="9" Margin="0,6,0,0"/></StackPanel>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="30,0,0,0"><TextBlock Text="SYSTEM READY" Foreground="{StaticResource Green}" FontSize="10" FontWeight="Bold"/><TextBlock Text="All ChugOS modules are online." Foreground="#686879" FontSize="9" Margin="0,6,0,0"/></StackPanel>
                                 </Grid>
                             </Border>
                             <Grid>
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                                 <Border Grid.Column="0" Background="{StaticResource Card}" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="10" Padding="16" Margin="0,0,6,0"><StackPanel><TextBlock Text="CPU" Foreground="#77778A" FontSize="9"/><TextBlock x:Name="CpuValue" Text="--%" Foreground="White" FontSize="22" FontWeight="SemiBold" Margin="0,6,0,0"/><TextBlock Text="Processor load" Foreground="#555566" FontSize="8" Margin="0,3,0,0"/></StackPanel></Border>
                                 <Border Grid.Column="1" Background="{StaticResource Card}" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="10" Padding="16" Margin="6,0"><StackPanel><TextBlock Text="MEMORY" Foreground="#77778A" FontSize="9"/><TextBlock x:Name="RamValue" Text="--%" Foreground="White" FontSize="22" FontWeight="SemiBold" Margin="0,6,0,0"/><TextBlock Text="Committed memory" Foreground="#555566" FontSize="8" Margin="0,3,0,0"/></StackPanel></Border>
-                                <Border Grid.Column="2" Background="{StaticResource Card}" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="10" Padding="16" Margin="6,0,0,0"><StackPanel><TextBlock Text="MODE" Foreground="#77778A" FontSize="9"/><TextBlock Text="OPTIMIZED" Foreground="{StaticResource Purple}" FontSize="18" FontWeight="SemiBold" Margin="0,9,0,0"/><TextBlock Text="TweakOS profile" Foreground="#555566" FontSize="8" Margin="0,3,0,0"/></StackPanel></Border>
+                                <Border Grid.Column="2" Background="{StaticResource Card}" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="10" Padding="16" Margin="6,0,0,0"><StackPanel><TextBlock Text="MODE" Foreground="#77778A" FontSize="9"/><TextBlock Text="OPTIMIZED" Foreground="{StaticResource Purple}" FontSize="18" FontWeight="SemiBold" Margin="0,9,0,0"/><TextBlock Text="ChugOS profile" Foreground="#555566" FontSize="8" Margin="0,3,0,0"/></StackPanel></Border>
                             </Grid>
                         </StackPanel>
                     </ScrollViewer>
@@ -213,7 +213,7 @@
 
                     <Grid x:Name="PerformancePanel" Grid.Row="1" Visibility="Collapsed" Margin="0,24,0,0"><StackPanel><TextBlock Text="PERFORMANCE" Foreground="White" FontSize="20" FontWeight="Bold"/><TextBlock Text="Live system telemetry." Foreground="#77778A" FontSize="10" Margin="0,4,0,18"/><Border Background="{StaticResource Card}" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="11" Padding="20"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="CPU USAGE" Foreground="#77778A" FontSize="9"/><TextBlock x:Name="CpuPerformanceValue" Text="--%" Foreground="White" FontSize="38" FontWeight="Bold" Margin="0,7,0,0"/></StackPanel><StackPanel Grid.Column="1"><TextBlock Text="MEMORY USAGE" Foreground="#77778A" FontSize="9"/><TextBlock x:Name="RamPerformanceValue" Text="--%" Foreground="White" FontSize="38" FontWeight="Bold" Margin="0,7,0,0"/></StackPanel></Grid></Border></StackPanel></Grid>
 
-                    <Grid x:Name="SettingsPanel" Grid.Row="1" Visibility="Collapsed" Margin="0,24,0,0"><StackPanel><TextBlock Text="SETTINGS" Foreground="White" FontSize="20" FontWeight="Bold"/><TextBlock Text="TweakOS application settings." Foreground="#77778A" FontSize="10" Margin="0,4,0,18"/><Border Background="{StaticResource Card}" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="11" Padding="18"><StackPanel><TextBlock Text="TweakOS" Foreground="White" FontSize="12" FontWeight="Bold"/><TextBlock Text="Performance Center • dark purple theme" Foreground="#686879" FontSize="9" Margin="0,5,0,0"/></StackPanel></Border></StackPanel></Grid>
+                    <Grid x:Name="SettingsPanel" Grid.Row="1" Visibility="Collapsed" Margin="0,24,0,0"><StackPanel><TextBlock Text="SETTINGS" Foreground="White" FontSize="20" FontWeight="Bold"/><TextBlock Text="ChugOS application settings." Foreground="#77778A" FontSize="10" Margin="0,4,0,18"/><Border Background="{StaticResource Card}" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="11" Padding="18"><StackPanel><TextBlock Text="ChugOS" Foreground="White" FontSize="12" FontWeight="Bold"/><TextBlock Text="Performance Center • dark purple theme" Foreground="#686879" FontSize="9" Margin="0,5,0,0"/></StackPanel></Border></StackPanel></Grid>
                 </Grid>
             </Grid>
         </Grid>
