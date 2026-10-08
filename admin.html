@@ -62,6 +62,11 @@
         resize: vertical;
     }
 
+    input[readonly] {
+        opacity: 0.8;
+        cursor: not-allowed;
+    }
+
     button {
         border: 0;
         border-radius: 10px;
@@ -123,6 +128,13 @@
     #status {
         color: #aaa;
         margin-top: 15px;
+    }
+
+    .versionInfo {
+        color: #777;
+        font-size: 13px;
+        margin-top: -5px;
+        margin-bottom: 15px;
     }
 </style>
 ```
@@ -204,15 +216,32 @@
             Neuer Changelog
         </h2>
 
+        <label>
+            Version
+        </label>
+
         <input
             id="version"
-            placeholder="Version, z.B. v5.0.2"
+            placeholder="Version wird geladen..."
+            readonly
         >
+
+        <div class="versionInfo">
+            Wird automatisch aus version.txt geladen.
+        </div>
+
+        <label>
+            Datum
+        </label>
 
         <input
             id="date"
             type="date"
         >
+
+        <label>
+            Änderungen
+        </label>
 
         <textarea
             id="changes"
@@ -244,7 +273,9 @@
 
     <div class="card">
 
-        <h2>Vorhandene Changelogs</h2>
+        <h2>
+            Vorhandene Changelogs
+        </h2>
 
         <div id="entries">
             Lade Changelogs...
@@ -265,8 +296,78 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_VwtyXd-NuH_G4iwqb6WpqQ_BYZNlv2B";
 
+const VERSION_URL =
+"https://raw.githubusercontent.com/lucassde87/TweakOS/main/version.txt";
+
 let accessToken = null;
 let editingId = null;
+
+
+// ==========================================
+// VERSION LADEN
+// ==========================================
+
+async function loadVersion() {
+
+    const versionInput =
+        document.getElementById("version");
+
+    try {
+
+        versionInput.value =
+            "Version wird geladen...";
+
+
+        const response = await fetch(
+            VERSION_URL +
+            "?t=" +
+            Date.now()
+        );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "version.txt konnte nicht geladen werden."
+            );
+        }
+
+
+        let version =
+            (await response.text()).trim();
+
+
+        if (!version) {
+
+            throw new Error(
+                "version.txt ist leer."
+            );
+        }
+
+
+        if (!version.startsWith("v")) {
+            version = "v" + version;
+        }
+
+
+        versionInput.value =
+            version;
+
+    }
+
+    catch (error) {
+
+        versionInput.value =
+            "Version konnte nicht geladen werden.";
+
+        document
+            .getElementById("status")
+            .textContent =
+            "Fehler bei version.txt: " +
+            error.message;
+    }
+
+}
 
 
 // ==========================================
@@ -303,12 +404,16 @@ async function adminLogin() {
         const response = await fetch(
             SUPABASE_URL +
             "/auth/v1/token?grant_type=password",
+
             {
                 method: "POST",
 
                 headers: {
-                    "Content-Type": "application/json",
-                    "apikey": SUPABASE_KEY
+                    "Content-Type":
+                        "application/json",
+
+                    "apikey":
+                        SUPABASE_KEY
                 },
 
                 body: JSON.stringify({
@@ -342,13 +447,21 @@ async function adminLogin() {
             .getElementById("loginPage")
             .classList.add("hidden");
 
+
         document
             .getElementById("adminPage")
             .classList.remove("hidden");
 
 
-        status.textContent = "";
+        status.textContent =
+            "";
 
+
+        // Version und Datum laden
+
+        loadVersion();
+
+        setToday();
 
         loadChangelogs();
 
@@ -359,6 +472,28 @@ async function adminLogin() {
         status.textContent =
             "Login fehlgeschlagen: " +
             error.message;
+
+    }
+
+}
+
+
+// ==========================================
+// HEUTIGES DATUM
+// ==========================================
+
+function setToday() {
+
+    const dateInput =
+        document.getElementById("date");
+
+
+    if (!dateInput.value) {
+
+        dateInput.value =
+            new Date()
+                .toISOString()
+                .split("T")[0];
 
     }
 
@@ -379,9 +514,20 @@ function logout() {
         .getElementById("adminPage")
         .classList.add("hidden");
 
+
     document
         .getElementById("loginPage")
         .classList.remove("hidden");
+
+
+    document
+        .getElementById("email")
+        .value = "";
+
+
+    document
+        .getElementById("password")
+        .value = "";
 
 }
 
@@ -393,22 +539,45 @@ function logout() {
 async function saveChangelog() {
 
     const version =
-        document.getElementById("version").value.trim();
+        document
+            .getElementById("version")
+            .value
+            .trim();
+
 
     const date =
-        document.getElementById("date").value;
+        document
+            .getElementById("date")
+            .value;
+
 
     const changes =
-        document.getElementById("changes").value.trim();
+        document
+            .getElementById("changes")
+            .value
+            .trim();
+
 
     const status =
         document.getElementById("status");
 
 
-    if (!version || !changes) {
+    if (
+        !version ||
+        version.includes("konnte nicht geladen")
+    ) {
 
         status.textContent =
-            "Version und Änderungen ausfüllen.";
+            "Version konnte nicht geladen werden.";
+
+        return;
+    }
+
+
+    if (!changes) {
+
+        status.textContent =
+            "Bitte Änderungen eingeben.";
 
         return;
     }
@@ -428,6 +597,7 @@ async function saveChangelog() {
         if (editingId) {
 
             response = await fetch(
+
                 SUPABASE_URL +
                 "/rest/v1/changelogs?id=eq." +
                 encodeURIComponent(editingId),
@@ -436,7 +606,9 @@ async function saveChangelog() {
                     method: "PATCH",
 
                     headers: {
-                        "Content-Type": "application/json",
+
+                        "Content-Type":
+                            "application/json",
 
                         "apikey":
                             SUPABASE_KEY,
@@ -450,7 +622,9 @@ async function saveChangelog() {
                     },
 
                     body: JSON.stringify({
-                        version: version,
+
+                        version:
+                            version,
 
                         date:
                             date ||
@@ -458,14 +632,18 @@ async function saveChangelog() {
                                 .toISOString()
                                 .split("T")[0],
 
-                        changes: changes
+                        changes:
+                            changes
                     })
                 }
             );
 
-        } else {
+        }
+
+        else {
 
             response = await fetch(
+
                 SUPABASE_URL +
                 "/rest/v1/changelogs",
 
@@ -473,7 +651,9 @@ async function saveChangelog() {
                     method: "POST",
 
                     headers: {
-                        "Content-Type": "application/json",
+
+                        "Content-Type":
+                            "application/json",
 
                         "apikey":
                             SUPABASE_KEY,
@@ -487,7 +667,9 @@ async function saveChangelog() {
                     },
 
                     body: JSON.stringify({
-                        version: version,
+
+                        version:
+                            version,
 
                         date:
                             date ||
@@ -495,10 +677,12 @@ async function saveChangelog() {
                                 .toISOString()
                                 .split("T")[0],
 
-                        changes: changes
+                        changes:
+                            changes
                     })
                 }
             );
+
         }
 
 
@@ -546,11 +730,13 @@ async function loadChangelogs() {
     try {
 
         const response = await fetch(
+
             SUPABASE_URL +
             "/rest/v1/changelogs?select=*&order=date.desc",
 
             {
                 headers: {
+
                     "apikey":
                         SUPABASE_KEY,
 
@@ -584,6 +770,7 @@ async function loadChangelogs() {
 
 
         container.innerHTML =
+
             data.map(entry => `
 
                 <div class="entry">
@@ -632,9 +819,11 @@ async function loadChangelogs() {
                 button.addEventListener(
                     "click",
                     function() {
+
                         editChangelog(
                             this.dataset.id
                         );
+
                     }
                 );
 
@@ -648,9 +837,11 @@ async function loadChangelogs() {
                 button.addEventListener(
                     "click",
                     function() {
+
                         deleteChangelog(
                             this.dataset.id
                         );
+
                     }
                 );
 
@@ -663,6 +854,7 @@ async function loadChangelogs() {
         container.innerHTML =
             "Fehler beim Laden: " +
             error.message;
+
     }
 
 }
@@ -677,6 +869,7 @@ async function editChangelog(id) {
     try {
 
         const response = await fetch(
+
             SUPABASE_URL +
             "/rest/v1/changelogs?id=eq." +
             encodeURIComponent(id) +
@@ -684,6 +877,7 @@ async function editChangelog(id) {
 
             {
                 headers: {
+
                     "apikey":
                         SUPABASE_KEY,
 
@@ -699,7 +893,10 @@ async function editChangelog(id) {
             await response.json();
 
 
-        if (!response.ok || !data.length) {
+        if (
+            !response.ok ||
+            !data.length
+        ) {
 
             throw new Error(
                 "Changelog konnte nicht geladen werden."
@@ -752,8 +949,11 @@ async function editChangelog(id) {
 
 
         window.scrollTo({
+
             top: 0,
+
             behavior: "smooth"
+
         });
 
     }
@@ -765,6 +965,7 @@ async function editChangelog(id) {
             .textContent =
             "Fehler: " +
             error.message;
+
     }
 
 }
@@ -804,6 +1005,13 @@ function cancelEdit() {
         .getElementById("cancelButton")
         .classList.add("hidden");
 
+
+    // Neue Version erneut laden
+
+    loadVersion();
+
+    setToday();
+
 }
 
 
@@ -813,10 +1021,14 @@ function cancelEdit() {
 
 async function deleteChangelog(id) {
 
-    if (!confirm(
-        "Diesen Changelog wirklich löschen?"
-    )) {
+    if (
+        !confirm(
+            "Diesen Changelog wirklich löschen?"
+        )
+    ) {
+
         return;
+
     }
 
 
@@ -831,6 +1043,7 @@ async function deleteChangelog(id) {
     try {
 
         const response = await fetch(
+
             SUPABASE_URL +
             "/rest/v1/changelogs?id=eq." +
             encodeURIComponent(id),
@@ -839,6 +1052,7 @@ async function deleteChangelog(id) {
                 method: "DELETE",
 
                 headers: {
+
                     "apikey":
                         SUPABASE_KEY,
 
@@ -859,6 +1073,7 @@ async function deleteChangelog(id) {
                 await response.text();
 
             throw new Error(error);
+
         }
 
 
@@ -875,6 +1090,7 @@ async function deleteChangelog(id) {
         status.textContent =
             "Fehler: " +
             error.message;
+
     }
 
 }
@@ -912,6 +1128,7 @@ function escapeHtml(text) {
             "'",
             "&#039;"
         );
+
 }
 
 
