@@ -128,7 +128,7 @@ jobs:
 
         run: |
 
-          $exe = "publish/TweakOS.exe"
+          $exe = "publish/ChugOS.exe"
 
           if (!(Test-Path $exe)) {
 
