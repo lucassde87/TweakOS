@@ -14,33 +14,18 @@ jobs:
 
     steps:
 
-      # ==============================
-      # CODE HERUNTERLADEN
-      # ==============================
-
       - name: Checkout
         uses: actions/checkout@v4
-
-
-      # ==============================
-      # .NET INSTALLIEREN
-      # ==============================
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
-
-      # ==============================
-      # VERSION AUS version.txt LESEN
-      # ==============================
-
       - name: Read Version
         id: version
         shell: pwsh
         run: |
-
           $file = "version.txt"
 
           if (!(Test-Path $file)) {
@@ -57,56 +42,8 @@ jobs:
 
           "version=$version" >> $env:GITHUB_OUTPUT
 
-
-      # ==============================
-      # PRÜFEN OB RELEASE EXISTIERT
-      # ==============================
-
-      - name: Check existing release
-        id: release_check
-        shell: pwsh
-        env:
-          GH_TOKEN: ${{ github.token }}
-
-        run: |
-
-          $version = "${{ steps.version.outputs.version }}"
-          $tag = "v$version"
-
-          Write-Host "Prüfe Release $tag ..."
-
-          $ErrorActionPreference = "Continue"
-
-          gh release view $tag 2>$null
-
-          if ($LASTEXITCODE -eq 0) {
-
-              Write-Host "Release $tag existiert bereits."
-
-              "exists=true" >> $env:GITHUB_OUTPUT
-
-          }
-          else {
-
-              Write-Host "Release $tag existiert noch nicht."
-
-              "exists=false" >> $env:GITHUB_OUTPUT
-
-          }
-
-          exit 0
-
-
-      # ==============================
-      # CHUGOS BAUEN
-      # EINZELNE EXE
-      # ==============================
-
       - name: Build ChugOS
-        if: steps.release_check.outputs.exists != 'true'
-
         run: |
-
           dotnet publish src/ChugOS/ChugOS.csproj `
             -c Release `
             -r win-x64 `
@@ -116,67 +53,53 @@ jobs:
             -p:EnableCompressionInSingleFile=true `
             -o publish
 
-
-      # ==============================
-      # EXE PRÜFEN
-      # ==============================
-
       - name: Verify EXE
-        if: steps.release_check.outputs.exists != 'true'
-
         shell: pwsh
-
         run: |
-
           $exe = "publish/ChugOS.exe"
 
           if (!(Test-Path $exe)) {
-
               Write-Host "Publish-Dateien:"
-
               Get-ChildItem publish
-
               throw "ChugOS.exe wurde nicht erstellt."
-
           }
 
           $size = (Get-Item $exe).Length / 1MB
 
-          Write-Host ""
           Write-Host "=============================="
           Write-Host "ChugOS.exe erfolgreich erstellt"
           Write-Host "Größe: $([math]::Round($size,2)) MB"
           Write-Host "=============================="
 
+      - name: Create or Update GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $version = "${{ steps.version.outputs.version }}"
+          $tag = "v$version"
 
-      # ==============================
-      # GITHUB RELEASE ERSTELLEN
-      # ==============================
+          Write-Host "Release: $tag"
 
-      - name: Create GitHub Release
-        if: steps.release_check.outputs.exists != 'true'
+          gh release view $tag 2>$null
 
-        uses: softprops/action-gh-release@v2
+          if ($LASTEXITCODE -eq 0) {
 
-        with:
+              Write-Host "Release existiert bereits."
+              Write-Host "ChugOS.exe wird aktualisiert."
 
-          tag_name: v${{ steps.version.outputs.version }}
+              gh release upload $tag `
+                "publish/ChugOS.exe" `
+                --clobber
 
-          name: ChugOS v${{ steps.version.outputs.version }}
+          } else {
 
-          body: |
+              Write-Host "Release existiert noch nicht."
+              Write-Host "Erstelle neues Release."
 
-            ## ChugOS v${{ steps.version.outputs.version }}
+              gh release create $tag `
+                "publish/ChugOS.exe" `
+                --title "ChugOS v$version" `
+                --notes "Neue Version von ChugOS.`n`nChugOS.exe - Windows x64"
 
-            Neue Version von ChugOS.
-
-            ### Download
-
-            ChugOS.exe
-
-            Einzelne Windows-EXE.
-            Keine ZIP-Datei.
-
-          files: publish/ChugOS.exe
-
-          generate_release_notes: true
+          }
