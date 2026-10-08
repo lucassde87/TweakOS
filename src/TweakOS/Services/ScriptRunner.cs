@@ -7,8 +7,19 @@ public sealed class ScriptRunner
 {
     public async Task<int> RunAsync(string path)
     {
-        var ext = Path.GetExtension(path).ToLowerInvariant();
+        if (string.IsNullOrWhiteSpace(path))
+            throw new ArgumentException("Kein Tool-Pfad angegeben.", nameof(path));
 
+        if (!Path.IsPathFullyQualified(path))
+            path = Path.Combine(AppContext.BaseDirectory, path);
+
+        path = Path.GetFullPath(path);
+
+        if (!File.Exists(path))
+            throw new FileNotFoundException(
+                $"Tool nicht gefunden: {path}", path);
+
+        var ext = Path.GetExtension(path).ToLowerInvariant();
         ProcessStartInfo psi;
 
         if (ext == ".ps1")
@@ -22,12 +33,22 @@ public sealed class ScriptRunner
                 WorkingDirectory = Path.GetDirectoryName(path) ?? AppContext.BaseDirectory
             };
         }
-        else
+        else if (ext is ".bat" or ".cmd")
         {
             psi = new ProcessStartInfo
             {
                 FileName = "cmd.exe",
-                Arguments = $"/c \"{path}\"",
+                Arguments = $"/c \"\"{path}\"\"",
+                UseShellExecute = true,
+                Verb = "runas",
+                WorkingDirectory = Path.GetDirectoryName(path) ?? AppContext.BaseDirectory
+            };
+        }
+        else
+        {
+            psi = new ProcessStartInfo
+            {
+                FileName = path,
                 UseShellExecute = true,
                 Verb = "runas",
                 WorkingDirectory = Path.GetDirectoryName(path) ?? AppContext.BaseDirectory
@@ -35,10 +56,9 @@ public sealed class ScriptRunner
         }
 
         using var process = Process.Start(psi)
-            ?? throw new InvalidOperationException("Script konnte nicht gestartet werden.");
+            ?? throw new InvalidOperationException("Tool konnte nicht gestartet werden.");
 
         await process.WaitForExitAsync();
-
         return process.ExitCode;
     }
 }
