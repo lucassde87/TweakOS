@@ -75,15 +75,19 @@ public sealed class ScriptRunner
 
     private static string ResolveTweakPath(string path)
     {
-        // Absoluter Pfad -> direkt verwenden
+        // Absoluten Pfad direkt verwenden
         if (Path.IsPathRooted(path))
             return Path.GetFullPath(path);
 
-        var relativePath = path.Replace('/', Path.DirectorySeparatorChar);
+        var relativePath = path.Replace(
+            '/',
+            Path.DirectorySeparatorChar);
 
         // 1. Neben der TweakOS-EXE suchen
         var appPath = Path.GetFullPath(
-            Path.Combine(AppContext.BaseDirectory, relativePath));
+            Path.Combine(
+                AppContext.BaseDirectory,
+                relativePath));
 
         if (File.Exists(appPath))
             return appPath;
@@ -92,36 +96,46 @@ public sealed class ScriptRunner
         var desktop = Environment.GetFolderPath(
             Environment.SpecialFolder.DesktopDirectory);
 
-        // catalog path: tweaks/FPS Tweaks/...
-        // Desktop path: FPS Tweaks/...
+        // Aus:
+        // tweaks/FPS Tweaks/Datei.ps1
+        //
+        // wird:
+        // FPS Tweaks/Datei.ps1
+        var tweaksPrefix =
+            "tweaks" + Path.DirectorySeparatorChar;
+
         if (relativePath.StartsWith(
-                "tweaks" + Path.DirectorySeparatorChar,
+                tweaksPrefix,
                 StringComparison.OrdinalIgnoreCase))
         {
-            relativePath = relativePath[
-                ("tweaks" + Path.DirectorySeparatorChar).Length..];
+            relativePath =
+                relativePath[tweaksPrefix.Length..];
         }
 
         var desktopPath = Path.GetFullPath(
-            Path.Combine(desktop, relativePath));
+            Path.Combine(
+                desktop,
+                relativePath));
 
         if (File.Exists(desktopPath))
             return desktopPath;
 
-        // 3. Downloads als zusätzliche Möglichkeit
+        // 3. Zusätzlich Downloads durchsuchen
         var downloads = Path.Combine(
             Environment.GetFolderPath(
                 Environment.SpecialFolder.UserProfile),
             "Downloads");
 
         var downloadsPath = Path.GetFullPath(
-            Path.Combine(downloads, relativePath));
+            Path.Combine(
+                downloads,
+                relativePath));
 
         if (File.Exists(downloadsPath))
             return downloadsPath;
 
-        // Wenn nichts gefunden wurde, Desktop-Pfad zurückgeben,
-        // damit die Fehlermeldung verständlich bleibt.
+        // Wenn nichts gefunden wurde,
+        // Desktop-Pfad für die Fehlermeldung zurückgeben.
         return desktopPath;
     }
 }
