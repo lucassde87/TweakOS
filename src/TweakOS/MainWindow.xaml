@@ -1,63 +1,80 @@
 <Window x:Class="TweakOS.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         Title="TweakOS" Width="1240" Height="780" MinWidth="1050" MinHeight="680"
         WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="CanResize"
-        Background="Transparent" AllowsTransparency="True" FontFamily="Segoe UI">
-    <shell:WindowChrome.WindowChrome>
-        <shell:WindowChrome CaptionHeight="38" ResizeBorderThickness="6" CornerRadius="14" GlassFrameThickness="0" UseAeroCaptionButtons="False"/>
-    </shell:WindowChrome.WindowChrome>
+        AllowsTransparency="True" Background="Transparent" FontFamily="Segoe UI"
+        SnapsToDevicePixels="True" UseLayoutRounding="True">
 
     <Window.Resources>
-        <!-- Website palette: #030305 / #08080D / #0D0D14 / #8B5CF6 / #6366F1 -->
-        <SolidColorBrush x:Key="Bg" Color="#030305"/>
-        <SolidColorBrush x:Key="Top" Color="#07070B"/>
-        <SolidColorBrush x:Key="Sidebar" Color="#08080D"/>
-        <SolidColorBrush x:Key="Card" Color="#0D0D14"/>
-        <SolidColorBrush x:Key="Card2" Color="#101019"/>
-        <SolidColorBrush x:Key="Line" Color="#1C1C28"/>
-        <SolidColorBrush x:Key="Line2" Color="#252535"/>
+        <SolidColorBrush x:Key="Bg" Color="#050507"/>
+        <SolidColorBrush x:Key="Sidebar" Color="#09090F"/>
+        <SolidColorBrush x:Key="Panel" Color="#0B0B12"/>
+        <SolidColorBrush x:Key="Card" Color="#10101A"/>
+        <SolidColorBrush x:Key="CardHover" Color="#151121"/>
+        <SolidColorBrush x:Key="Line" Color="#1D1D2A"/>
+        <SolidColorBrush x:Key="LineHover" Color="#4A2C86"/>
         <SolidColorBrush x:Key="Text" Color="#F7F7FB"/>
         <SolidColorBrush x:Key="Muted" Color="#77778A"/>
+        <SolidColorBrush x:Key="Muted2" Color="#555568"/>
         <SolidColorBrush x:Key="Purple" Color="#8B5CF6"/>
-        <SolidColorBrush x:Key="Purple2" Color="#6D28D9"/>
-        <SolidColorBrush x:Key="Blue" Color="#6366F1"/>
+        <SolidColorBrush x:Key="PurpleDark" Color="#6D28D9"/>
+        <SolidColorBrush x:Key="PurpleSoft" Color="#1B1230"/>
         <SolidColorBrush x:Key="Green" Color="#36E29B"/>
 
         <Style x:Key="WindowButton" TargetType="Button">
-            <Setter Property="Width" Value="38"/><Setter Property="Height" Value="30"/>
-            <Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#8A8A99"/>
-            <Setter Property="BorderThickness" Value="0"/><Setter Property="FontSize" Value="12"/><Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Width" Value="42"/><Setter Property="Height" Value="34"/>
+            <Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#77778A"/>
+            <Setter Property="BorderThickness" Value="0"/><Setter Property="FontSize" Value="13"/><Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
-                <Border x:Name="B" Background="{TemplateBinding Background}" CornerRadius="6"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                <Border x:Name="B" Background="{TemplateBinding Background}" CornerRadius="7">
+                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
                 <ControlTemplate.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="B" Property="Background" Value="#181822"/><Setter Property="Foreground" Value="White"/></Trigger>
+                    <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="B" Property="Background" Value="#17131F"/><Setter Property="Foreground" Value="White"/></Trigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate></Setter.Value></Setter>
         </Style>
 
         <Style x:Key="Nav" TargetType="Button">
-            <Setter Property="Height" Value="43"/><Setter Property="Margin" Value="0,3"/><Setter Property="Padding" Value="14,0"/>
-            <Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#818192"/><Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="44"/><Setter Property="Margin" Value="0,4"/><Setter Property="Padding" Value="13,0"/>
+            <Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#8A8998"/><Setter Property="BorderThickness" Value="0"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/><Setter Property="FontSize" Value="12"/><Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
-                <Border x:Name="B" Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
-                    <ContentPresenter VerticalAlignment="Center"/>
+                <Border x:Name="B" Background="{TemplateBinding Background}" BorderBrush="Transparent" BorderThickness="1" CornerRadius="8">
+                    <Grid>
+                        <Border x:Name="Accent" Width="3" HorizontalAlignment="Left" VerticalAlignment="Stretch" Background="Transparent" CornerRadius="2"/>
+                        <ContentPresenter Margin="13,0,0,0" VerticalAlignment="Center"/>
+                    </Grid>
                 </Border>
                 <ControlTemplate.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="B" Property="Background" Value="#11111A"/><Setter Property="Foreground" Value="#D8D5E1"/></Trigger>
+                    <Trigger Property="Tag" Value="Active">
+                        <Setter TargetName="B" Property="Background" Value="#1B1230"/>
+                        <Setter TargetName="B" Property="BorderBrush" Value="#2E1D4E"/>
+                        <Setter TargetName="Accent" Property="Background" Value="#8B5CF6"/>
+                        <Setter Property="Foreground" Value="#FFFFFF"/>
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter TargetName="B" Property="Background" Value="#15101F"/>
+                        <Setter TargetName="B" Property="BorderBrush" Value="#302040"/>
+                        <Setter Property="Foreground" Value="#FFFFFF"/>
+                    </Trigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate></Setter.Value></Setter>
         </Style>
 
         <Style x:Key="Category" TargetType="Button">
-            <Setter Property="Height" Value="38"/><Setter Property="Padding" Value="16,0"/><Setter Property="Margin" Value="0,0,8,0"/>
-            <Setter Property="Background" Value="#0D0D14"/><Setter Property="Foreground" Value="#858596"/><Setter Property="BorderBrush" Value="#20202C"/><Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Height" Value="40"/><Setter Property="Padding" Value="16,0"/><Setter Property="Margin" Value="0,0,9,0"/>
+            <Setter Property="Background" Value="#10101A"/><Setter Property="Foreground" Value="#858596"/><Setter Property="BorderBrush" Value="#20202E"/><Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontSize" Value="11"/><Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
-                <Border x:Name="B" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" Padding="{TemplateBinding Padding}"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
-                <ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="B" Property="Background" Value="#15121E"/><Setter TargetName="B" Property="BorderBrush" Value="#5B3AA0"/><Setter Property="Foreground" Value="White"/></Trigger></ControlTemplate.Triggers>
+                <Border x:Name="B" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="Tag" Value="Active"><Setter TargetName="B" Property="Background" Value="#1B1230"/><Setter TargetName="B" Property="BorderBrush" Value="#8B5CF6"/><Setter Property="Foreground" Value="#FFFFFF"/></Trigger>
+                    <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="B" Property="Background" Value="#171121"/><Setter TargetName="B" Property="BorderBrush" Value="#6D45B0"/><Setter Property="Foreground" Value="#FFFFFF"/></Trigger>
+                </ControlTemplate.Triggers>
             </ControlTemplate></Setter.Value></Setter>
         </Style>
 
@@ -66,23 +83,42 @@
             <Setter Property="BorderThickness" Value="0"/><Setter Property="FontSize" Value="10"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
                 <Border x:Name="B" Background="{TemplateBinding Background}" CornerRadius="7"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
-                <ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="B" Property="Background" Value="#9B6AF7"/></Trigger><Trigger Property="IsEnabled" Value="False"><Setter TargetName="B" Property="Opacity" Value="0.45"/></Trigger></ControlTemplate.Triggers>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="B" Property="Background" Value="#A274FF"/></Trigger>
+                    <Trigger Property="IsPressed" Value="True"><Setter TargetName="B" Property="Background" Value="#6D28D9"/></Trigger>
+                    <Trigger Property="IsEnabled" Value="False"><Setter TargetName="B" Property="Opacity" Value="0.45"/></Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate></Setter.Value></Setter>
+        </Style>
+
+        <Style x:Key="CardButton" TargetType="Button">
+            <Setter Property="Background" Value="#10101A"/><Setter Property="Foreground" Value="#A4A3B1"/><Setter Property="BorderBrush" Value="#222232"/><Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Height" Value="36"/><Setter Property="Padding" Value="12,0"/><Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button">
+                <Border x:Name="B" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="7">
+                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="B" Property="Background" Value="#1B1230"/><Setter TargetName="B" Property="BorderBrush" Value="#8B5CF6"/><Setter Property="Foreground" Value="White"/></Trigger>
+                </ControlTemplate.Triggers>
             </ControlTemplate></Setter.Value></Setter>
         </Style>
     </Window.Resources>
 
-    <Border Background="{StaticResource Bg}" BorderBrush="#22222E" BorderThickness="1" CornerRadius="14">
+    <Border Background="{StaticResource Bg}" BorderBrush="#20202B" BorderThickness="1" CornerRadius="12">
         <Grid>
-            <Grid.RowDefinitions><RowDefinition Height="38"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+            <Grid.RowDefinitions><RowDefinition Height="46"/><RowDefinition Height="*"/></Grid.RowDefinitions>
 
-            <!-- custom title bar -->
-            <Border Grid.Row="0" Background="{StaticResource Top}" CornerRadius="14,14,0,0" shell:WindowChrome.IsHitTestVisibleInChrome="False">
+            <!-- Custom dark title bar -->
+            <Border Grid.Row="0" Background="#08080D" CornerRadius="12,12,0,0" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
                 <Grid>
-                    <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                        <Border Width="20" Height="20" CornerRadius="6" Background="{StaticResource Purple}" Margin="0,0,8,0"><TextBlock Text="T" Foreground="White" FontWeight="Bold" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
-                        <TextBlock Text="TweakOS" Foreground="White" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="18,0,0,0">
+                        <Border Width="22" Height="22" CornerRadius="6" Background="#8B5CF6" Margin="0,0,9,0">
+                            <TextBlock Text="T" Foreground="White" FontSize="12" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="TweakOS" Foreground="#F7F7FB" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,4,8,4" shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,8,0">
                         <Button Style="{StaticResource WindowButton}" Content="—" Click="Minimize_Click"/>
                         <Button Style="{StaticResource WindowButton}" Content="□" Click="Maximize_Click"/>
                         <Button Style="{StaticResource WindowButton}" Content="×" Click="Close_Click"/>
@@ -91,19 +127,21 @@
             </Border>
 
             <Grid Grid.Row="1">
-                <Grid.ColumnDefinitions><ColumnDefinition Width="228"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="236"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
 
-                <Border Grid.Column="0" Background="{StaticResource Sidebar}" BorderBrush="{StaticResource Line}" BorderThickness="0,0,1,0" CornerRadius="0,0,0,14">
-                    <Grid Margin="16,20,14,16">
+                <Border Grid.Column="0" Background="{StaticResource Sidebar}" BorderBrush="{StaticResource Line}" BorderThickness="0,0,1,0" CornerRadius="0,0,0,12">
+                    <Grid Margin="17,20,16,16">
                         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-                        <StackPanel Grid.Row="0" Margin="8,0,0,26">
-                            <TextBlock Text="TweakOS" Foreground="White" FontSize="23" FontWeight="Bold"/>
-                            <TextBlock Text="PERFORMANCE CENTER" Foreground="#6D6D80" FontSize="8" CharacterSpacing="70" Margin="0,4,0,0"/>
+                        <StackPanel Grid.Row="0" Margin="8,0,0,25">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="30" Height="30" CornerRadius="8" Background="#8B5CF6" Margin="0,0,10,0"><TextBlock Text="T" Foreground="White" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                                <StackPanel VerticalAlignment="Center"><TextBlock Text="TweakOS" Foreground="White" FontSize="22" FontWeight="Bold"/><TextBlock Text="by Damon" Foreground="#77778A" FontSize="9" Margin="0,2,0,0"/></StackPanel>
+                            </StackPanel>
                         </StackPanel>
-                        <Border Grid.Row="1" Background="#0D0D14" BorderBrush="#20202B" BorderThickness="1" CornerRadius="9" Padding="11,10" Margin="0,0,0,17">
+                        <Border Grid.Row="1" Background="#10101A" BorderBrush="#242432" BorderThickness="1" CornerRadius="9" Padding="11,10" Margin="0,0,0,18">
                             <StackPanel>
                                 <StackPanel Orientation="Horizontal"><Ellipse Width="6" Height="6" Fill="{StaticResource Green}" Margin="0,0,8,0"/><TextBlock Text="SYSTEM READY" Foreground="{StaticResource Green}" FontSize="9" FontWeight="Bold"/></StackPanel>
-                                <TextBlock Text="TweakOS 5.0" Foreground="#666678" FontSize="9" Margin="14,5,0,0"/>
+                                <TextBlock Text="TweakOS 5.0" Foreground="#6E6E80" FontSize="9" Margin="14,5,0,0"/>
                             </StackPanel>
                         </Border>
                         <StackPanel Grid.Row="2">
@@ -116,18 +154,18 @@
                     </Grid>
                 </Border>
 
-                <Grid Grid.Column="1" Margin="34,27,34,28">
+                <Grid Grid.Column="1" Margin="35,29,35,28">
                     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+
                     <Grid Grid.Row="0">
                         <StackPanel>
-                            <TextBlock Text="PERFORMANCE CENTER" Foreground="White" FontSize="25" FontWeight="Bold"/>
-                            <TextBlock Text="System optimized." Foreground="#6F6F80" FontSize="11" Margin="0,5,0,0"/>
+                            <TextBlock x:Name="PageTitle" Text="PERFORMANCE CENTER" Foreground="White" FontSize="26" FontWeight="Bold"/>
+                            <TextBlock x:Name="PageSubtitle" Text="System optimized." Foreground="#77778A" FontSize="11" Margin="0,5,0,0"/>
                         </StackPanel>
-                        <Button Content="Check for Updates" HorizontalAlignment="Right" Width="126" Height="34" Margin="0,0,0,1" Style="{StaticResource Category}" Click="Update_Click"/>
+                        <Button Content="Check for Updates" HorizontalAlignment="Right" Width="136" Height="36" Style="{StaticResource CardButton}" Click="Update_Click"/>
                     </Grid>
 
-                    <!-- Dashboard -->
-                    <ScrollViewer x:Name="DashboardPanel" Grid.Row="1" VerticalScrollBarVisibility="Hidden" Margin="0,25,0,0">
+                    <ScrollViewer x:Name="DashboardPanel" Grid.Row="1" VerticalScrollBarVisibility="Hidden" Margin="0,24,0,0">
                         <StackPanel>
                             <Border Background="{StaticResource Card}" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="12" Padding="22" Margin="0,0,0,12">
                                 <Grid>
@@ -138,10 +176,7 @@
                                         <TextBlock Text="Your system is ready for peak performance." Foreground="#77778A" FontSize="10"/>
                                         <Border Height="6" Background="#191622" CornerRadius="3" Margin="0,14,0,0"><Border Width="0.98" Background="{StaticResource Purple}" CornerRadius="3" HorizontalAlignment="Left"/></Border>
                                     </StackPanel>
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="30,0,0,0">
-                                        <TextBlock Text="SYSTEM READY" Foreground="{StaticResource Green}" FontSize="10" FontWeight="Bold"/>
-                                        <TextBlock Text="All TweakOS modules are online." Foreground="#686879" FontSize="9" Margin="0,6,0,0"/>
-                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="30,0,0,0"><TextBlock Text="SYSTEM READY" Foreground="{StaticResource Green}" FontSize="10" FontWeight="Bold"/><TextBlock Text="All TweakOS modules are online." Foreground="#686879" FontSize="9" Margin="0,6,0,0"/></StackPanel>
                                 </Grid>
                             </Border>
                             <Grid>
@@ -153,30 +188,32 @@
                         </StackPanel>
                     </ScrollViewer>
 
-                    <!-- Tweaks -->
                     <Grid x:Name="TweaksPanel" Grid.Row="1" Visibility="Collapsed" Margin="0,24,0,0">
                         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-                        <StackPanel Grid.Row="0"><TextBlock Text="TWEAK CENTER" Foreground="White" FontSize="19" FontWeight="Bold"/><TextBlock Text="Performance tools, grouped exactly like the TweakOS website." Foreground="#6D6D7D" FontSize="10" Margin="0,4,0,0"/></StackPanel>
-                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,17,0,12"><Button Content="⚡  FPS Tweaks" Tag="FPS Tweaks" Style="{StaticResource Category}" Click="Category_Click"/><Button Content="🌐  Network" Tag="Network" Style="{StaticResource Category}" Click="Category_Click"/><Button Content="🧹  Clearen" Tag="Clearen" Style="{StaticResource Category}" Click="Category_Click"/><TextBox x:Name="SearchBox" Width="220" Height="38" Margin="10,0,0,0" Background="{StaticResource Card}" Foreground="White" BorderBrush="{StaticResource Line2}" BorderThickness="1" Padding="12,0" VerticalContentAlignment="Center" TextChanged="SearchBox_TextChanged"/>
+                        <StackPanel Grid.Row="0">
+                            <TextBlock Text="TWEAK CENTER" Foreground="White" FontSize="20" FontWeight="Bold"/>
+                            <TextBlock Text="Performance tools grouped by category." Foreground="#77778A" FontSize="10" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,17,0,15">
+                            <Button x:Name="FpsCategory" Content="⚡  FPS Tweaks" Tag="Active" Style="{StaticResource Category}" Click="Category_Click"/>
+                            <Button x:Name="NetworkCategory" Content="◎  Network" Style="{StaticResource Category}" Tag="" Click="Category_Click"/>
+                            <Button x:Name="ClearenCategory" Content="✦  Clearen" Style="{StaticResource Category}" Tag="" Click="Category_Click"/>
+                            <TextBox x:Name="SearchBox" Width="230" Height="40" Margin="10,0,0,0" Background="{StaticResource Card}" Foreground="White" BorderBrush="#252535" BorderThickness="1" Padding="12,0" VerticalContentAlignment="Center" TextChanged="SearchBox_TextChanged"/>
                         </StackPanel>
                         <ListView x:Name="TweakList" Grid.Row="2" Background="Transparent" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                             <ListView.ItemsPanel><ItemsPanelTemplate><WrapPanel IsItemsHost="True"/></ItemsPanelTemplate></ListView.ItemsPanel>
                             <ListView.ItemTemplate><DataTemplate>
-                                <Border Width="300" Height="124" Background="{StaticResource Card}" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="11" Padding="15" Margin="0,0,10,10">
-                                    <Grid><Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions><StackPanel><TextBlock Text="{Binding Name}" Foreground="White" FontSize="12" FontWeight="Bold"/><TextBlock Text="{Binding Description}" Foreground="#686879" FontSize="9" Margin="0,6,0,0" TextWrapping="Wrap" MaxHeight="35"/></StackPanel><Button Grid.Row="1" Content="RUN" Tag="{Binding}" HorizontalAlignment="Left" Style="{StaticResource Run}" Click="Run_Click"/></Grid>
+                                <Border Width="340" Height="132" BorderThickness="1" CornerRadius="11" Padding="16" Margin="0,0,12,12">
+                                    <Border.Style><Style TargetType="Border"><Setter Property="Background" Value="#10101A"/><Setter Property="BorderBrush" Value="#1D1D2A"/><Style.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter Property="Background" Value="#151121"/><Setter Property="BorderBrush" Value="#8B5CF6"/></Trigger></Style.Triggers></Style></Border.Style>
+                                    <Grid><Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions><StackPanel><TextBlock Text="{Binding Name}" Foreground="White" FontSize="13" FontWeight="Bold"/><TextBlock Text="{Binding Description}" Foreground="#707083" FontSize="9" Margin="0,6,0,0" TextWrapping="Wrap" MaxHeight="34"/></StackPanel><Button Grid.Row="1" Content="RUN" Tag="{Binding}" HorizontalAlignment="Left" Style="{StaticResource Run}" Click="Run_Click"/></Grid>
                                 </Border>
                             </DataTemplate></ListView.ItemTemplate>
                         </ListView>
                     </Grid>
 
-                    <!-- Performance -->
-                    <Grid x:Name="PerformancePanel" Grid.Row="1" Visibility="Collapsed" Margin="0,24,0,0">
-                        <StackPanel><TextBlock Text="PERFORMANCE" Foreground="White" FontSize="19" FontWeight="Bold"/><TextBlock Text="Live system telemetry." Foreground="#6D6D7D" FontSize="10" Margin="0,4,0,18"/>
-                            <Border Background="{StaticResource Card}" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="11" Padding="20"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="CPU USAGE" Foreground="#77778A" FontSize="9"/><TextBlock x:Name="CpuPerformanceValue" Text="--%" Foreground="White" FontSize="38" FontWeight="Bold" Margin="0,7,0,0"/></StackPanel><StackPanel Grid.Column="1"><TextBlock Text="MEMORY USAGE" Foreground="#77778A" FontSize="9"/><TextBlock x:Name="RamPerformanceValue" Text="--%" Foreground="White" FontSize="38" FontWeight="Bold" Margin="0,7,0,0"/></StackPanel></Grid></Border>
-                        </StackPanel></Grid>
+                    <Grid x:Name="PerformancePanel" Grid.Row="1" Visibility="Collapsed" Margin="0,24,0,0"><StackPanel><TextBlock Text="PERFORMANCE" Foreground="White" FontSize="20" FontWeight="Bold"/><TextBlock Text="Live system telemetry." Foreground="#77778A" FontSize="10" Margin="0,4,0,18"/><Border Background="{StaticResource Card}" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="11" Padding="20"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="CPU USAGE" Foreground="#77778A" FontSize="9"/><TextBlock x:Name="CpuPerformanceValue" Text="--%" Foreground="White" FontSize="38" FontWeight="Bold" Margin="0,7,0,0"/></StackPanel><StackPanel Grid.Column="1"><TextBlock Text="MEMORY USAGE" Foreground="#77778A" FontSize="9"/><TextBlock x:Name="RamPerformanceValue" Text="--%" Foreground="White" FontSize="38" FontWeight="Bold" Margin="0,7,0,0"/></StackPanel></Grid></Border></StackPanel></Grid>
 
-                    <!-- Settings -->
-                    <Grid x:Name="SettingsPanel" Grid.Row="1" Visibility="Collapsed" Margin="0,24,0,0"><StackPanel><TextBlock Text="SETTINGS" Foreground="White" FontSize="19" FontWeight="Bold"/><TextBlock Text="TweakOS application settings." Foreground="#6D6D7D" FontSize="10" Margin="0,4,0,18"/><Border Background="{StaticResource Card}" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="11" Padding="18"><StackPanel><TextBlock Text="TweakOS" Foreground="White" FontSize="12" FontWeight="Bold"/><TextBlock Text="Performance Center • dark purple theme" Foreground="#686879" FontSize="9" Margin="0,5,0,0"/></StackPanel></Border></StackPanel></Grid>
+                    <Grid x:Name="SettingsPanel" Grid.Row="1" Visibility="Collapsed" Margin="0,24,0,0"><StackPanel><TextBlock Text="SETTINGS" Foreground="White" FontSize="20" FontWeight="Bold"/><TextBlock Text="TweakOS application settings." Foreground="#77778A" FontSize="10" Margin="0,4,0,18"/><Border Background="{StaticResource Card}" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="11" Padding="18"><StackPanel><TextBlock Text="TweakOS" Foreground="White" FontSize="12" FontWeight="Bold"/><TextBlock Text="Performance Center • dark purple theme" Foreground="#686879" FontSize="9" Margin="0,5,0,0"/></StackPanel></Border></StackPanel></Grid>
                 </Grid>
             </Grid>
         </Grid>
