@@ -1,223 +1,188 @@
-using System;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Threading;
-using TweakOS.Models;
-using TweakOS.Services;
+<Window x:Class="TweakOS.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TweakOS"
+        Width="1280" Height="760" MinWidth="1100" MinHeight="650"
+        WindowStartupLocation="CenterScreen"
+        Background="#030305">
+    <Window.Resources>
+        <SolidColorBrush x:Key="Card" Color="#0D0D14"/>
+        <SolidColorBrush x:Key="Card2" Color="#11111A"/>
+        <SolidColorBrush x:Key="Border" Color="#24212F"/>
+        <SolidColorBrush x:Key="Muted" Color="#817D91"/>
+        <SolidColorBrush x:Key="Purple" Color="#8B5CF6"/>
+        <SolidColorBrush x:Key="Blue" Color="#6366F1"/>
+        <Style x:Key="NavButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#9692A5"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="14,12"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Margin" Value="0,2"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style x:Key="ActionButton" TargetType="Button">
+            <Setter Property="Background" Value="#171323"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#33264F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14,9"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style x:Key="CategoryButton" TargetType="Button">
+            <Setter Property="Background" Value="#0D0D14"/>
+            <Setter Property="Foreground" Value="#C7C2D5"/>
+            <Setter Property="BorderBrush" Value="#24212F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="18,13"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </Window.Resources>
 
-namespace TweakOS;
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="225"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-public partial class MainWindow : Window
-{
-    private readonly TweakCatalogService _catalogService = new();
-    private readonly ReleaseService _releaseService = new();
-    private readonly ScriptRunner _scriptRunner = new();
-    private readonly ObservableCollection<TweakDefinition> _allTweaks = new();
+        <Border Grid.Column="0" Background="#08080D" BorderBrush="#17151F" BorderThickness="0,0,1,0">
+            <Grid Margin="18">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-    private PerformanceCounter? _cpuCounter;
-    private PerformanceCounter? _ramCounter;
-    private readonly DispatcherTimer _performanceTimer;
-    private string _selectedCategory = "FPS Tweaks";
+                <StackPanel Margin="5,10,5,28">
+                    <TextBlock Text="TweakOS" Foreground="White" FontSize="24" FontWeight="Bold"/>
+                    <TextBlock Text="Performance Center" Foreground="#6E687C" FontSize="11" Margin="0,3,0,0"/>
+                </StackPanel>
 
-    public MainWindow()
-    {
-        InitializeComponent();
+                <Border Grid.Row="1" Background="#0D0D14" BorderBrush="#211D2B" BorderThickness="1"
+                        CornerRadius="8" Padding="11" Margin="0,0,0,20">
+                    <TextBlock Text="●  SYSTEM READY" Foreground="#36E29B" FontSize="10" FontWeight="Bold"/>
+                </Border>
 
-        try
-        {
-            _cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-            _ramCounter = new PerformanceCounter("Memory", "% Committed Bytes In Use");
-            _cpuCounter.NextValue();
-            _ramCounter.NextValue();
-        }
-        catch
-        {
-            _cpuCounter = null;
-            _ramCounter = null;
-        }
+                <StackPanel Grid.Row="2">
+                    <Button Content="▣   Dashboard" Style="{StaticResource NavButton}" Click="Dashboard_Click"/>
+                    <Button Content="⚡   Tweak Center" Style="{StaticResource NavButton}" Click="Tweaks_Click"/>
+                    <Button Content="◉   Performance" Style="{StaticResource NavButton}" Click="Performance_Click"/>
+                    <Button Content="⚙   Settings" Style="{StaticResource NavButton}" Click="Settings_Click"/>
+                </StackPanel>
 
-        _performanceTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-        _performanceTimer.Tick += PerformanceTimer_Tick;
-        _performanceTimer.Start();
+                <TextBlock Grid.Row="3" Text="TweakOS • Gaming Utility" Foreground="#4E4A59"
+                           FontSize="10" Margin="5,0,5,8"/>
+            </Grid>
+        </Border>
 
-        _ = LoadTweaksAsync();
-        ShowDashboard();
-    }
+        <Grid Grid.Column="1" Margin="34,28">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-    private async Task LoadTweaksAsync()
-    {
-        try
-        {
-            var catalog = await _catalogService.LoadAsync();
-            _allTweaks.Clear();
+            <Grid Grid.Row="0" Margin="0,0,0,25">
+                <StackPanel>
+                    <TextBlock Text="PERFORMANCE CENTER" Foreground="White" FontSize="25" FontWeight="Bold"/>
+                    <TextBlock Text="Tune your system. Play without limits." Foreground="#6E687C" FontSize="12" Margin="0,5,0,0"/>
+                </StackPanel>
+                <Button Content="Check for Updates" HorizontalAlignment="Right" VerticalAlignment="Center"
+                        Style="{StaticResource ActionButton}" Click="Update_Click"/>
+            </Grid>
 
-            foreach (var tweak in catalog.Tweaks.Where(x => x.Enabled))
-                _allTweaks.Add(tweak);
+            <Grid x:Name="DashboardPanel" Grid.Row="1">
+                <Grid.RowDefinitions><RowDefinition Height="200"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
 
-            RefreshTweakList();
-        }
-        catch (Exception ex)
-        {
-            TweakList.ItemsSource = null;
-            MessageBox.Show("Der Tweak-Katalog konnte nicht geladen werden.\n\n" + ex.Message,
-                "TweakOS", MessageBoxButton.OK, MessageBoxImage.Warning);
-        }
-    }
+                <Border Grid.Row="0" Grid.Column="0" Background="{StaticResource Card}" BorderBrush="{StaticResource Border}"
+                        BorderThickness="1" CornerRadius="12" Padding="24" Margin="0,0,12,0">
+                    <StackPanel>
+                        <TextBlock Text="PERFORMANCE" Foreground="{StaticResource Muted}" FontSize="10" FontWeight="Bold"/>
+                        <TextBlock Text="98%" Foreground="White" FontSize="46" FontWeight="Bold" Margin="0,8,0,0"/>
+                        <TextBlock Text="Gaming Optimized" Foreground="#36E29B" FontSize="12"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Row="0" Grid.Column="1" Background="{StaticResource Card}" BorderBrush="{StaticResource Border}"
+                        BorderThickness="1" CornerRadius="12" Padding="20" Margin="0,0,12,0">
+                    <StackPanel><TextBlock Text="CPU" Foreground="{StaticResource Muted}" FontSize="10"/>
+                        <TextBlock x:Name="CpuValue" Text="--%" Foreground="White" FontSize="31" FontWeight="Bold" Margin="0,14,0,0"/>
+                        <TextBlock Text="Usage" Foreground="#5D5968" FontSize="10"/></StackPanel>
+                </Border>
+                <Border Grid.Row="0" Grid.Column="2" Background="{StaticResource Card}" BorderBrush="{StaticResource Border}"
+                        BorderThickness="1" CornerRadius="12" Padding="20">
+                    <StackPanel><TextBlock Text="MEMORY" Foreground="{StaticResource Muted}" FontSize="10"/>
+                        <TextBlock x:Name="RamValue" Text="--%" Foreground="White" FontSize="31" FontWeight="Bold" Margin="0,14,0,0"/>
+                        <TextBlock Text="RAM Usage" Foreground="#5D5968" FontSize="10"/></StackPanel>
+                </Border>
 
-    private void RefreshTweakList()
-    {
-        var search = SearchBox?.Text?.Trim() ?? "";
+                <Border Grid.Row="1" Grid.ColumnSpan="3" Background="{StaticResource Card}" BorderBrush="{StaticResource Border}"
+                        BorderThickness="1" CornerRadius="12" Padding="24" Margin="0,15,0,0">
+                    <StackPanel>
+                        <TextBlock Text="SYSTEM STATUS" Foreground="White" FontSize="15" FontWeight="Bold"/>
+                        <TextBlock Text="✓  Gaming Optimized     ✓  Input Enhanced     ✓  System Clean"
+                                   Foreground="#B8B2C4" FontSize="12" Margin="0,25,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
 
-        var filtered = _allTweaks.Where(x =>
-            x.Category.Equals(_selectedCategory, StringComparison.OrdinalIgnoreCase) &&
-            (string.IsNullOrWhiteSpace(search) ||
-             x.Name.Contains(search, StringComparison.OrdinalIgnoreCase) ||
-             x.Description.Contains(search, StringComparison.OrdinalIgnoreCase)));
+            <Grid x:Name="TweaksPanel" Grid.Row="1" Visibility="Collapsed">
+                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                <TextBlock Text="TWEAK CENTER" Foreground="White" FontSize="20" FontWeight="Bold"/>
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,18,0,12">
+                    <Button Content="⚡  FPS Tweaks" Tag="FPS Tweaks" Style="{StaticResource CategoryButton}" Click="Category_Click"/>
+                    <Button Content="🌐  Network" Tag="Network" Style="{StaticResource CategoryButton}" Click="Category_Click"/>
+                    <Button Content="🧹  Clearen" Tag="Clearen" Style="{StaticResource CategoryButton}" Click="Category_Click"/>
+                </StackPanel>
+                <Grid Grid.Row="2">
+                    <Grid.RowDefinitions><RowDefinition Height="40"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                    <TextBox x:Name="SearchBox" Background="#0D0D14" Foreground="White" BorderBrush="#24212F"
+                             Padding="12" BorderThickness="1" TextChanged="SearchBox_TextChanged"/>
+                    <ListView x:Name="TweakList" Grid.Row="1" Margin="0,12,0,0" Background="Transparent" BorderThickness="0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#0D0D14" BorderBrush="#24212F" BorderThickness="1" CornerRadius="9"
+                                        Padding="16" Margin="0,0,0,8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Name}" Foreground="White" FontSize="14" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding Description}" Foreground="#716C7D" FontSize="11" Margin="0,4,0,0"/>
+                                        </StackPanel>
+                                        <Button Grid.Column="1" Content="RUN" Tag="{Binding}" Click="Run_Click"
+                                                Style="{StaticResource ActionButton}" Padding="22,8"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </Grid>
 
-        TweakList.ItemsSource = new ObservableCollection<TweakDefinition>(filtered);
-    }
+            <Grid x:Name="PerformancePanel" Grid.Row="1" Visibility="Collapsed">
+                <StackPanel>
+                    <Border Background="{StaticResource Card}" BorderBrush="{StaticResource Border}" BorderThickness="1" CornerRadius="12" Padding="24" Margin="0,0,0,12">
+                        <StackPanel><TextBlock Text="CPU USAGE" Foreground="{StaticResource Muted}" FontSize="10"/>
+                            <TextBlock x:Name="CpuPerformanceValue" Text="--%" Foreground="White" FontSize="40" FontWeight="Bold" Margin="0,7,0,0"/></StackPanel>
+                    </Border>
+                    <Border Background="{StaticResource Card}" BorderBrush="{StaticResource Border}" BorderThickness="1" CornerRadius="12" Padding="24">
+                        <StackPanel><TextBlock Text="MEMORY USAGE" Foreground="{StaticResource Muted}" FontSize="10"/>
+                            <TextBlock x:Name="RamPerformanceValue" Text="--%" Foreground="White" FontSize="40" FontWeight="Bold" Margin="0,7,0,0"/></StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
 
-    private void PerformanceTimer_Tick(object? sender, EventArgs e)
-    {
-        try
-        {
-            var cpu = _cpuCounter?.NextValue();
-            var ram = _ramCounter?.NextValue();
-
-            CpuValue.Text = cpu.HasValue ? $"{cpu.Value:0}%" : "--%";
-            CpuPerformanceValue.Text = CpuValue.Text;
-            RamValue.Text = ram.HasValue ? $"{ram.Value:0}%" : "--%";
-            RamPerformanceValue.Text = RamValue.Text;
-        }
-        catch
-        {
-            CpuValue.Text = CpuPerformanceValue.Text = "--%";
-            RamValue.Text = RamPerformanceValue.Text = "--%";
-        }
-    }
-
-    private void Dashboard_Click(object sender, RoutedEventArgs e) => ShowDashboard();
-
-    private void Tweaks_Click(object sender, RoutedEventArgs e)
-    {
-        HideAllPanels();
-        TweaksPanel.Visibility = Visibility.Visible;
-        RefreshTweakList();
-    }
-
-    private void Category_Click(object sender, RoutedEventArgs e)
-    {
-        if (sender is Button button && button.Tag is string category)
-        {
-            _selectedCategory = category;
-            RefreshTweakList();
-        }
-    }
-
-    private void Performance_Click(object sender, RoutedEventArgs e)
-    {
-        HideAllPanels();
-        PerformancePanel.Visibility = Visibility.Visible;
-    }
-
-    private void Settings_Click(object sender, RoutedEventArgs e)
-    {
-        HideAllPanels();
-        SettingsPanel.Visibility = Visibility.Visible;
-    }
-
-    private void ShowDashboard()
-    {
-        HideAllPanels();
-        DashboardPanel.Visibility = Visibility.Visible;
-    }
-
-    private void HideAllPanels()
-    {
-        DashboardPanel.Visibility = Visibility.Collapsed;
-        TweaksPanel.Visibility = Visibility.Collapsed;
-        PerformancePanel.Visibility = Visibility.Collapsed;
-        SettingsPanel.Visibility = Visibility.Collapsed;
-    }
-
-    private void SearchBox_TextChanged(object sender, TextChangedEventArgs e) => RefreshTweakList();
-
-    private async void Run_Click(object sender, RoutedEventArgs e)
-    {
-        if (sender is not Button button || button.Tag is not TweakDefinition tweak)
-            return;
-
-        try
-        {
-            button.IsEnabled = false;
-            var exitCode = await _scriptRunner.RunAsync(tweak.Script);
-
-            MessageBox.Show(
-                exitCode == 0
-                    ? $"{tweak.Name} wurde erfolgreich ausgeführt."
-                    : $"{tweak.Name} wurde beendet (Exit-Code {exitCode}).",
-                "TweakOS",
-                MessageBoxButton.OK,
-                exitCode == 0 ? MessageBoxImage.Information : MessageBoxImage.Warning);
-        }
-        catch (System.ComponentModel.Win32Exception)
-        {
-            MessageBox.Show("Der Start wurde abgebrochen oder die Administratorfreigabe wurde verweigert.",
-                "TweakOS", MessageBoxButton.OK, MessageBoxImage.Warning);
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show("Tweak konnte nicht ausgeführt werden:\n\n" + ex.Message,
-                "TweakOS", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-        finally
-        {
-            button.IsEnabled = true;
-        }
-    }
-
-    private async void Update_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            var release = await _releaseService.GetLatestAsync();
-            if (release == null || string.IsNullOrWhiteSpace(release.TagName))
-            {
-                MessageBox.Show("Kein Release gefunden.", "TweakOS");
-                return;
-            }
-
-            if (!ReleaseService.IsNewer(release.TagName))
-            {
-                MessageBox.Show("Du verwendest bereits die aktuelle Version.", "TweakOS");
-                return;
-            }
-
-            if (MessageBox.Show($"Eine neue Version ist verfügbar:\n\n{release.TagName}\n\nHerunterladen?",
-                    "TweakOS Update", MessageBoxButton.YesNo, MessageBoxImage.Information) != MessageBoxResult.Yes)
-                return;
-
-            var downloaded = await _releaseService.DownloadUpdateAsync(release);
-            var updater = ReleaseService.CreateUpdater(downloaded);
-            ReleaseService.StartUpdater(updater);
-            Application.Current.Shutdown();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show("Update fehlgeschlagen:\n\n" + ex.Message,
-                "TweakOS", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-    }
-
-    protected override void OnClosed(EventArgs e)
-    {
-        _performanceTimer.Stop();
-        _cpuCounter?.Dispose();
-        _ramCounter?.Dispose();
-        base.OnClosed(e);
-    }
-}
+            <Grid x:Name="SettingsPanel" Grid.Row="1" Visibility="Collapsed">
+                <Border Background="{StaticResource Card}" BorderBrush="{StaticResource Border}" BorderThickness="1" CornerRadius="12" Padding="24">
+                    <StackPanel><TextBlock Text="Settings" Foreground="White" FontSize="18" FontWeight="Bold"/>
+                        <TextBlock Text="TweakOS Performance Center" Foreground="{StaticResource Muted}" Margin="0,8,0,20"/>
+                        <Button Content="Check for Updates" Width="180" HorizontalAlignment="Left"
+                                Style="{StaticResource ActionButton}" Click="Update_Click"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
