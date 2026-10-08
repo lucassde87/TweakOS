@@ -1,221 +1,243 @@
 <!DOCTYPE html>
+
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>ChugOS Admin</title>
+```
+<title>ChugOS Admin</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<style>
+    * {
+        box-sizing: border-box;
+    }
 
-        body {
-            margin: 0;
-            min-height: 100vh;
-            font-family: Arial, sans-serif;
-            background: #0b0b0f;
-            color: white;
-            padding: 40px 20px;
-        }
+    body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Arial, sans-serif;
+        background: #0b0b0f;
+        color: white;
+        padding: 40px 20px;
+    }
 
-        .container {
-            max-width: 900px;
-            margin: auto;
-        }
+    .container {
+        max-width: 900px;
+        margin: auto;
+    }
 
-        h1 {
-            margin-bottom: 5px;
-        }
+    h1 {
+        margin-bottom: 5px;
+    }
 
-        .subtitle {
-            color: #999;
-            margin-bottom: 30px;
-        }
+    .subtitle {
+        color: #999;
+        margin-bottom: 30px;
+    }
 
-        .card {
-            background: #15151b;
-            border: 1px solid #292932;
-            border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 20px;
-        }
+    .card {
+        background: #15151b;
+        border: 1px solid #292932;
+        border-radius: 16px;
+        padding: 25px;
+        margin-bottom: 20px;
+    }
 
-        input,
-        textarea {
-            width: 100%;
-            background: #0d0d12;
-            color: white;
-            border: 1px solid #30303a;
-            border-radius: 10px;
-            padding: 13px;
-            margin-top: 8px;
-            margin-bottom: 15px;
-            font-size: 15px;
-        }
+    input,
+    textarea {
+        width: 100%;
+        background: #0d0d12;
+        color: white;
+        border: 1px solid #30303a;
+        border-radius: 10px;
+        padding: 13px;
+        margin-top: 8px;
+        margin-bottom: 15px;
+        font-size: 15px;
+    }
 
-        textarea {
-            min-height: 180px;
-            resize: vertical;
-        }
+    textarea {
+        min-height: 180px;
+        resize: vertical;
+    }
 
-        button {
-            border: 0;
-            border-radius: 10px;
-            padding: 12px 18px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-right: 8px;
-        }
+    button {
+        border: 0;
+        border-radius: 10px;
+        padding: 12px 18px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-right: 8px;
+    }
 
-        .primary {
-            background: white;
-            color: black;
-        }
+    .primary {
+        background: white;
+        color: black;
+    }
 
-        .danger {
-            background: #d33;
-            color: white;
-        }
+    .danger {
+        background: #d33;
+        color: white;
+    }
 
-        .logout {
-            background: #292932;
-            color: white;
-        }
+    .secondary {
+        background: #292932;
+        color: white;
+    }
 
-        .hidden {
-            display: none;
-        }
+    .logout {
+        background: #292932;
+        color: white;
+    }
 
-        .entry {
-            border-top: 1px solid #292932;
-            padding: 20px 0;
-        }
+    .hidden {
+        display: none;
+    }
 
-        .entry:first-child {
-            border-top: 0;
-        }
+    .entry {
+        border-top: 1px solid #292932;
+        padding: 20px 0;
+    }
 
-        .entry h3 {
-            margin-bottom: 5px;
-        }
+    .entry:first-child {
+        border-top: 0;
+    }
 
-        .date {
-            color: #888;
-            font-size: 13px;
-        }
+    .entry h3 {
+        margin-bottom: 5px;
+    }
 
-        .changes {
-            white-space: pre-line;
-            color: #ccc;
-            line-height: 1.6;
-            margin: 15px 0;
-        }
+    .date {
+        color: #888;
+        font-size: 13px;
+    }
 
-        #status {
-            margin-top: 15px;
-            color: #aaa;
-        }
-    </style>
+    .changes {
+        white-space: pre-line;
+        color: #ccc;
+        line-height: 1.6;
+        margin: 15px 0;
+    }
+
+    .actions {
+        margin-top: 15px;
+    }
+
+    #status {
+        margin-top: 15px;
+        color: #aaa;
+    }
+</style>
+```
+
 </head>
 
 <body>
 
 <div class="container">
 
-    <div id="login">
+```
+<div id="login">
 
-        <div class="card">
+    <div class="card">
 
-            <h1>ChugOS Admin</h1>
+        <h1>ChugOS Admin</h1>
 
-            <p class="subtitle">
-                Login zum Verwalten der Changelogs
-            </p>
+        <p class="subtitle">
+            Login zum Verwalten der Changelogs
+        </p>
 
-            <input
-                id="email"
-                type="email"
-                placeholder="Admin E-Mail"
-            >
+        <input
+            id="email"
+            type="email"
+            placeholder="Admin E-Mail"
+        >
 
-            <input
-                id="password"
-                type="password"
-                placeholder="Passwort"
-            >
+        <input
+            id="password"
+            type="password"
+            placeholder="Passwort"
+        >
 
-            <button class="primary" onclick="login()">
-                LOGIN
-            </button>
+        <button class="primary" onclick="login()">
+            LOGIN
+        </button>
 
-            <p id="loginStatus"></p>
-
-        </div>
-
-    </div>
-
-
-    <div id="admin" class="hidden">
-
-        <div class="card">
-
-            <h1>ChugOS Admin</h1>
-
-            <p class="subtitle">
-                Changelogs verwalten
-            </p>
-
-            <button class="logout" onclick="logout()">
-                LOGOUT
-            </button>
-
-        </div>
-
-
-        <div class="card">
-
-            <h2>Neuer Changelog</h2>
-
-            <input
-                id="version"
-                placeholder="Version, z.B. v5.0.2"
-            >
-
-            <input
-                id="date"
-                type="date"
-            >
-
-            <textarea
-                id="changes"
-                placeholder="Änderungen&#10;&#10;• Bugfix&#10;• Neue Funktion&#10;• Verbesserungen"
-            ></textarea>
-
-            <button class="primary" onclick="saveChangelog()">
-                SPEICHERN
-            </button>
-
-            <p id="status"></p>
-
-        </div>
-
-
-        <div class="card">
-
-            <h2>Vorhandene Changelogs</h2>
-
-            <div id="entries">
-                Lade Changelogs...
-            </div>
-
-        </div>
+        <p id="loginStatus"></p>
 
     </div>
 
 </div>
 
+
+<div id="admin" class="hidden">
+
+    <div class="card">
+
+        <h1>ChugOS Admin</h1>
+
+        <p class="subtitle">
+            Changelogs verwalten
+        </p>
+
+        <button class="logout" onclick="logout()">
+            LOGOUT
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2 id="formTitle">Neuer Changelog</h2>
+
+        <input
+            id="version"
+            placeholder="Version, z.B. v5.0.2"
+        >
+
+        <input
+            id="date"
+            type="date"
+        >
+
+        <textarea
+            id="changes"
+            placeholder="Änderungen&#10;&#10;• Bugfix&#10;• Neue Funktion&#10;• Verbesserungen"
+        ></textarea>
+
+        <button class="primary" onclick="saveChangelog()">
+            SPEICHERN
+        </button>
+
+        <button
+            id="cancelEdit"
+            class="secondary hidden"
+            onclick="cancelEdit()"
+        >
+            ABBRECHEN
+        </button>
+
+        <p id="status"></p>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Vorhandene Changelogs</h2>
+
+        <div id="entries">
+            Lade Changelogs...
+        </div>
+
+    </div>
+
+</div>
+```
+
+</div>
 
 <script>
 
@@ -225,8 +247,8 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_VwtyXd-NuH_G4iwqb6WpqQ_BYZNlv2B";
 
-
 let accessToken = null;
+let editingId = null;
 
 
 // ==============================
@@ -244,9 +266,7 @@ async function login() {
     const status =
         document.getElementById("loginStatus");
 
-
     status.textContent = "Login...";
-
 
     try {
 
@@ -268,10 +288,8 @@ async function login() {
             }
         );
 
-
         const data =
             await response.json();
-
 
         if (!response.ok) {
 
@@ -283,10 +301,8 @@ async function login() {
 
         }
 
-
         accessToken =
             data.access_token;
-
 
         document
             .getElementById("login")
@@ -295,7 +311,6 @@ async function login() {
         document
             .getElementById("admin")
             .classList.remove("hidden");
-
 
         loadChangelogs();
 
@@ -319,6 +334,8 @@ function logout() {
 
     accessToken = null;
 
+    cancelEdit();
+
     document
         .getElementById("admin")
         .classList.add("hidden");
@@ -331,19 +348,19 @@ function logout() {
 
 
 // ==============================
-// CHANGELOG SPEICHERN
+// CHANGELOG SPEICHERN / BEARBEITEN
 // ==============================
 
 async function saveChangelog() {
 
     const version =
-        document.getElementById("version").value;
+        document.getElementById("version").value.trim();
 
     const date =
         document.getElementById("date").value;
 
     const changes =
-        document.getElementById("changes").value;
+        document.getElementById("changes").value.trim();
 
     const status =
         document.getElementById("status");
@@ -360,44 +377,101 @@ async function saveChangelog() {
 
 
     status.textContent =
-        "Speichere...";
+        editingId
+            ? "Änderung wird gespeichert..."
+            : "Speichere...";
 
 
     try {
 
-        const response = await fetch(
-            SUPABASE_URL +
-            "/rest/v1/changelogs",
-            {
-                method: "POST",
+        let response;
 
-                headers: {
-                    "Content-Type": "application/json",
 
-                    "apikey": SUPABASE_KEY,
+        // ==========================
+        // BEARBEITEN
+        // ==========================
 
-                    "Authorization":
-                        "Bearer " + accessToken,
+        if (editingId) {
 
-                    "Prefer":
-                        "return=minimal"
-                },
+            response = await fetch(
+                SUPABASE_URL +
+                "/rest/v1/changelogs?id=eq." +
+                encodeURIComponent(editingId),
+                {
+                    method: "PATCH",
 
-                body: JSON.stringify({
+                    headers: {
+                        "Content-Type": "application/json",
 
-                    version: version,
+                        "apikey": SUPABASE_KEY,
 
-                    date:
-                        date ||
-                        new Date()
-                            .toISOString()
-                            .split("T")[0],
+                        "Authorization":
+                            "Bearer " + accessToken,
 
-                    changes: changes
+                        "Prefer":
+                            "return=minimal"
+                    },
 
-                })
-            }
-        );
+                    body: JSON.stringify({
+
+                        version: version,
+
+                        date:
+                            date ||
+                            new Date()
+                                .toISOString()
+                                .split("T")[0],
+
+                        changes: changes
+
+                    })
+                }
+            );
+
+        }
+
+
+        // ==========================
+        // NEU ERSTELLEN
+        // ==========================
+
+        else {
+
+            response = await fetch(
+                SUPABASE_URL +
+                "/rest/v1/changelogs",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json",
+
+                        "apikey": SUPABASE_KEY,
+
+                        "Authorization":
+                            "Bearer " + accessToken,
+
+                        "Prefer":
+                            "return=minimal"
+                    },
+
+                    body: JSON.stringify({
+
+                        version: version,
+
+                        date:
+                            date ||
+                            new Date()
+                                .toISOString()
+                                .split("T")[0],
+
+                        changes: changes
+
+                    })
+                }
+            );
+
+        }
 
 
         if (!response.ok) {
@@ -411,15 +485,12 @@ async function saveChangelog() {
 
 
         status.textContent =
-            "✓ Changelog gespeichert.";
+            editingId
+                ? "✓ Changelog geändert."
+                : "✓ Changelog gespeichert.";
 
-        document
-            .getElementById("version")
-            .value = "";
 
-        document
-            .getElementById("changes")
-            .value = "";
+        cancelEdit();
 
 
         loadChangelogs();
@@ -454,7 +525,10 @@ async function loadChangelogs() {
             "/rest/v1/changelogs?select=*&order=date.desc",
             {
                 headers: {
-                    "apikey": SUPABASE_KEY
+                    "apikey": SUPABASE_KEY,
+
+                    "Authorization":
+                        "Bearer " + accessToken
                 }
             }
         );
@@ -500,44 +574,26 @@ async function loadChangelogs() {
                         ${escapeHtml(entry.changes)}
                     </div>
 
+                    <div class="actions">
+
+                        <button
+                            class="primary"
+                            onclick="editChangelog('${entry.id}')"
+                        >
+                            BEARBEITEN
+                        </button>
+
+                        <button
+                            class="danger"
+                            onclick="deleteChangelog('${entry.id}')"
+                        >
+                            LÖSCHEN
+                        </button>
+
+                    </div>
+
                 </div>
 
             `).join("");
 
     }
-
-    catch (error) {
-
-        container.innerHTML =
-            "Fehler beim Laden: " +
-            error.message;
-
-    }
-
-}
-
-
-// ==============================
-// HTML SICHER MACHEN
-// ==============================
-
-function escapeHtml(text) {
-
-    return String(text)
-
-        .replaceAll("&", "&amp;")
-
-        .replaceAll("<", "&lt;")
-
-        .replaceAll(">", "&gt;")
-
-        .replaceAll('"', "&quot;")
-
-        .replaceAll("'", "&#039;");
-
-}
-
-</script>
-
-</body>
-</html>
