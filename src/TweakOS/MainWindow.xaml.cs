@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using TweakOS.Models;
@@ -97,6 +98,15 @@ public partial class MainWindow : Window
         {
             CpuValue.Text = CpuPerformanceValue.Text = "--%";
             RamValue.Text = RamPerformanceValue.Text = "--%";
+        }
+    }
+
+
+    private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ChangedButton == MouseButton.Left)
+        {
+            try { DragMove(); } catch { }
         }
     }
 
