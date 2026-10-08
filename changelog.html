@@ -3,52 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChugOS – Changelog</title>
+
+    <title>ChugOS — Changelog</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
+            min-height: 100vh;
             font-family: Arial, sans-serif;
-            background: #0f0f0f;
+            background: #0b0b0f;
             color: white;
+            padding: 40px 20px;
         }
 
         .container {
-            max-width: 900px;
-            margin: 60px auto;
-            padding: 20px;
+            max-width: 850px;
+            margin: auto;
         }
 
-        h1 {
-            font-size: 42px;
-            margin-bottom: 40px;
-        }
-
-        .version {
-            background: #181818;
-            border: 1px solid #292929;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 20px;
-        }
-
-        .version h2 {
-            margin-top: 0;
-        }
-
-        .version ul {
-            line-height: 1.8;
+        a {
+            color: white;
+            text-decoration: none;
         }
 
         .back {
             display: inline-block;
             margin-bottom: 30px;
-            color: #aaa;
-            text-decoration: none;
+            color: #999;
         }
 
-        .back:hover {
-            color: white;
+        h1 {
+            font-size: 42px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #999;
+            margin-bottom: 40px;
+        }
+
+        .release {
+            background: #15151b;
+            border: 1px solid #292932;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .release h2 {
+            margin: 0 0 5px;
+        }
+
+        .date {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .changes {
+            white-space: pre-line;
+            color: #ccc;
+            line-height: 1.7;
+        }
+
+        .loading {
+            color: #888;
         }
     </style>
 </head>
@@ -57,32 +80,113 @@
 
 <div class="container">
 
-    <a class="back" href="index.html">← Zurück zu ChugOS</a>
+    <a href="index.html" class="back">
+        ← Zurück zu ChugOS
+    </a>
 
     <h1>Changelog</h1>
 
-    <div class="version">
-        <h2>v5.0.1</h2>
+    <p class="subtitle">
+        Alle Updates und Verbesserungen von ChugOS.
+    </p>
 
-        <ul>
-            <li>Fehler „Tool nicht gefunden“ behoben</li>
-            <li>Desktop-Tweak-Ordner wird jetzt automatisch erkannt</li>
-            <li>ScriptRunner verbessert</li>
-            <li>Tweak-Ausführung stabilisiert</li>
-        </ul>
-    </div>
-
-    <div class="version">
-        <h2>v5.0.0</h2>
-
-        <ul>
-            <li>ChugOS v5 veröffentlicht</li>
-            <li>Neue Tweak-Verwaltung</li>
-            <li>Verbesserte Benutzeroberfläche</li>
-        </ul>
+    <div id="changelog">
+        <p class="loading">
+            Changelogs werden geladen...
+        </p>
     </div>
 
 </div>
+
+
+<script>
+
+const SUPABASE_URL =
+"https://bnrawlkikbqkvdtkaauz.supabase.co";
+
+const SUPABASE_KEY =
+"DEIN_PUBLISHABLE_KEY_HIER";
+
+
+async function loadChangelogs() {
+
+    const container =
+        document.getElementById("changelog");
+
+    try {
+
+        const response = await fetch(
+            SUPABASE_URL +
+            "/rest/v1/changelogs?select=*&order=date.desc",
+            {
+                headers: {
+                    "apikey": SUPABASE_KEY
+                }
+            }
+        );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                JSON.stringify(data)
+            );
+        }
+
+        if (!data.length) {
+
+            container.innerHTML =
+                "<p>Noch keine Changelogs vorhanden.</p>";
+
+            return;
+        }
+
+        container.innerHTML =
+            data.map(entry => `
+
+                <article class="release">
+
+                    <h2>
+                        ${escapeHtml(entry.version)}
+                    </h2>
+
+                    <div class="date">
+                        ${escapeHtml(entry.date)}
+                    </div>
+
+                    <div class="changes">
+                        ${escapeHtml(entry.changes)}
+                    </div>
+
+                </article>
+
+            `).join("");
+
+    } catch (error) {
+
+        container.innerHTML =
+            "<p>Changelog konnte nicht geladen werden.</p>";
+
+        console.error(error);
+    }
+}
+
+
+function escapeHtml(text) {
+
+    return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+
+loadChangelogs();
+
+</script>
 
 </body>
 </html>
