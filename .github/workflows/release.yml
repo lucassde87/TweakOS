@@ -44,7 +44,7 @@ jobs:
 
       - name: Build ChugOS
         run: |
-          dotnet publish src/ChugOS/ChugOS.csproj `
+          dotnet publish src/TweakOS/TweakOS.csproj `
             -c Release `
             -r win-x64 `
             --self-contained true `
