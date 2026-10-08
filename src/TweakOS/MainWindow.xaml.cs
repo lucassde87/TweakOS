@@ -115,11 +115,11 @@ public partial class MainWindow : Window
     {
         foreach (var nav in new[] { DashboardNav, TweaksNav, PerformanceNav, SettingsNav })
         {
-            nav.Background = Brushes.Transparent;
-            nav.Foreground = (Brush)new BrushConverter().ConvertFromString("#818192");
+            nav.Tag = "";
+            nav.Foreground = (Brush)new BrushConverter().ConvertFromString("#8A8998");
         }
 
-        active.Background = (Brush)new BrushConverter().ConvertFromString("#171027");
+        active.Tag = "Active";
         active.Foreground = Brushes.White;
     }
 
@@ -130,14 +130,23 @@ public partial class MainWindow : Window
         HideAllPanels();
         TweaksPanel.Visibility = Visibility.Visible;
         SetActiveNav(TweaksNav);
+        PageTitle.Text = "TWEAK CENTER";
+        PageSubtitle.Text = "Performance tools grouped by category.";
         RefreshTweakList();
     }
 
     private void Category_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is Button button && button.Tag is string category)
+        if (sender is Button button)
         {
-            _selectedCategory = category;
+            var content = button.Content?.ToString() ?? string.Empty;
+            _selectedCategory = content.Contains("FPS", StringComparison.OrdinalIgnoreCase) ? "FPS Tweaks"
+                : content.Contains("Network", StringComparison.OrdinalIgnoreCase) ? "Network"
+                : "Clearen";
+
+            FpsCategory.Tag = _selectedCategory == "FPS Tweaks" ? "Active" : "";
+            NetworkCategory.Tag = _selectedCategory == "Network" ? "Active" : "";
+            ClearenCategory.Tag = _selectedCategory == "Clearen" ? "Active" : "";
             RefreshTweakList();
         }
     }
@@ -147,6 +156,8 @@ public partial class MainWindow : Window
         HideAllPanels();
         PerformancePanel.Visibility = Visibility.Visible;
         SetActiveNav(PerformanceNav);
+        PageTitle.Text = "PERFORMANCE";
+        PageSubtitle.Text = "Live system telemetry.";
     }
 
     private void Settings_Click(object sender, RoutedEventArgs e)
@@ -154,6 +165,8 @@ public partial class MainWindow : Window
         HideAllPanels();
         SettingsPanel.Visibility = Visibility.Visible;
         SetActiveNav(SettingsNav);
+        PageTitle.Text = "SETTINGS";
+        PageSubtitle.Text = "TweakOS application settings.";
     }
 
     private void ShowDashboard()
@@ -161,6 +174,8 @@ public partial class MainWindow : Window
         HideAllPanels();
         DashboardPanel.Visibility = Visibility.Visible;
         SetActiveNav(DashboardNav);
+        PageTitle.Text = "PERFORMANCE CENTER";
+        PageSubtitle.Text = "System optimized.";
     }
 
     private void HideAllPanels()
