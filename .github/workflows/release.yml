@@ -1,4 +1,4 @@
-name: TweakOS Release
+name: ChugOS Release
 
 on:
   push:
@@ -98,16 +98,16 @@ jobs:
 
 
       # ==============================
-      # TWEAKOS BAUEN
+      # CHUGOS BAUEN
       # EINZELNE EXE
       # ==============================
 
-      - name: Build TweakOS
+      - name: Build ChugOS
         if: steps.release_check.outputs.exists != 'true'
 
         run: |
 
-          dotnet publish src/TweakOS/TweakOS.csproj `
+          dotnet publish src/ChugOS/ChugOS.csproj `
             -c Release `
             -r win-x64 `
             --self-contained true `
@@ -136,7 +136,7 @@ jobs:
 
               Get-ChildItem publish
 
-              throw "TweakOS.exe wurde nicht erstellt."
+              throw "ChugOS.exe wurde nicht erstellt."
 
           }
 
@@ -144,7 +144,7 @@ jobs:
 
           Write-Host ""
           Write-Host "=============================="
-          Write-Host "TweakOS.exe erfolgreich erstellt"
+          Write-Host "ChugOS.exe erfolgreich erstellt"
           Write-Host "Größe: $([math]::Round($size,2)) MB"
           Write-Host "=============================="
 
@@ -162,21 +162,21 @@ jobs:
 
           tag_name: v${{ steps.version.outputs.version }}
 
-          name: TweakOS v${{ steps.version.outputs.version }}
+          name: ChugOS v${{ steps.version.outputs.version }}
 
           body: |
 
-            ## TweakOS v${{ steps.version.outputs.version }}
+            ## ChugOS v${{ steps.version.outputs.version }}
 
-            Neue Version von TweakOS.
+            Neue Version von ChugOS.
 
             ### Download
 
-            TweakOS.exe
+            ChugOS.exe
 
             Einzelne Windows-EXE.
             Keine ZIP-Datei.
 
-          files: publish/TweakOS.exe
+          files: publish/ChugOS.exe
 
           generate_release_notes: true
