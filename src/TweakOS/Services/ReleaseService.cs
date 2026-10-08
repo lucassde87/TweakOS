@@ -14,7 +14,7 @@ public string Name { get; set; } = "";
 public string HtmlUrl { get; set; } = "";
 public string Body { get; set; } = "";
 public string DownloadUrl { get; set; } = "";
-}
+}There was an error committing your changes: **File could not be edited**
 
 public sealed class ReleaseService
 {
@@ -247,4 +247,38 @@ public static string CreateUpdater(
         "} " +
         "}; " +
         "Remove-Item $source -Force -ErrorAction SilentlyContinue; " +
+        "Start-Process $target\"\r\n" +
+        "\r\n" +
+        "del \"%~f0\"\r\n";
+
+    File.WriteAllText(
+        updaterPath,
+        script);
+
+    return updaterPath;
+}
+
+private static string EscapePowerShell(
+    string value)
+{
+    return value.Replace(
+        "'",
+        "''");
+}
+
+public static void StartUpdater(
+    string updaterPath)
+{
+    Process.Start(
+        new ProcessStartInfo
+        {
+            FileName = updaterPath,
+            UseShellExecute = true,
+            CreateNoWindow = true,
+            WindowStyle =
+                ProcessWindowStyle.Hidden
+        });
+}
 ```
+
+}
