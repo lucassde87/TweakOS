@@ -5,8 +5,8 @@
     <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyName>TweakOS</AssemblyName>
-    <RootNamespace>TweakOS</RootNamespace>
+    <AssemblyName>ChugOS</AssemblyName>
+    <RootNamespace>ChugOS</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
