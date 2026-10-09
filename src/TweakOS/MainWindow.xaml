@@ -135,7 +135,7 @@
                         <StackPanel Grid.Row="0" Margin="8,0,0,25">
                             <StackPanel Orientation="Horizontal">
                                 <Border Width="30" Height="30" CornerRadius="8" Background="#8B5CF6" Margin="0,0,10,0"><TextBlock Text="T" Foreground="White" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
-                                <StackPanel VerticalAlignment="Center"><TextBlock Text="ChugOS" Foreground="White" FontSize="22" FontWeight="Bold"/><TextBlock Text="by Damon" Foreground="#77778A" FontSize="9" Margin="0,2,0,0"/></StackPanel>
+                                <StackPanel VerticalAlignment="Center"><TextBlock Text="ChugOS" Foreground="White" FontSize="22" FontWeight="Bold"/><TextBlock Text="by Rylix" Foreground="#77778A" FontSize="9" Margin="0,2,0,0"/></StackPanel>
                             </StackPanel>
                         </StackPanel>
                         <Border Grid.Row="1" Background="#10101A" BorderBrush="#242432" BorderThickness="1" CornerRadius="9" Padding="11,10" Margin="0,0,0,18">
